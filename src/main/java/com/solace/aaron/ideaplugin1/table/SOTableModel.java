@@ -18,7 +18,9 @@ import com.solace.aaron.ideaplugin1.domain.EventPortalDomain;
 
 public class SOTableModel extends ListTableModel<EventPortalDomain>
 {
-    public SOTableModel(ColumnInfo @NotNull [] columnNames, @NotNull List<EventPortalDomain> stackOverflowQuestions)
+	private static final long serialVersionUID = 1L;
+	
+	public SOTableModel(ColumnInfo<EventPortalDomain, String> @NotNull [] columnNames, @NotNull List<EventPortalDomain> stackOverflowQuestions)
     {
         super(columnNames, stackOverflowQuestions);
     }

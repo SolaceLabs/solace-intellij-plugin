@@ -1,5 +1,5 @@
 import org.jetbrains.changelog.markdownToHTML
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+//import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 fun properties(key: String) = project.findProperty(key).toString()
 
@@ -7,7 +7,7 @@ plugins {
     // Java support
     id("java")
     // Kotlin support
-    id("org.jetbrains.kotlin.jvm") version "1.6.10"
+    //id("org.jetbrains.kotlin.jvm") version "1.6.10"
     // Gradle IntelliJ Plugin
     id("org.jetbrains.intellij") version "1.8.0"
     // Gradle Changelog Plugin
@@ -24,6 +24,9 @@ version = properties("pluginVersion")
 // Configure project's dependencies
 repositories {
     mavenCentral()
+    flatDir {
+        dirs("lib")
+    }
 }
 
 // Configure Gradle IntelliJ Plugin - read more: https://github.com/JetBrains/gradle-intellij-plugin
@@ -50,16 +53,35 @@ qodana {
     showReport.set(System.getenv("QODANA_SHOW_REPORT")?.toBoolean() ?: false)
 }
 
+dependencies {
+// https://stackoverflow.com/questions/54166069/how-do-you-add-local-jar-file-dependency-to-build-gradle-kt-file
+    implementation(files("lib/*.jar"))
+//fileTree(dir("lib"), include("*.jar"))  // EP 2.0 API Swagger codegen
+
+    // needed for Swagger?
+    implementation("com.squareup.okhttp:okhttp:2.7.5")
+    implementation("io.gsonfire:gson-fire:1.8.5")
+    implementation("org.threeten:threetenbp:1.6.0")
+
+    implementation("org.jsonschema2pojo:jsonschema2pojo-core:1.1.2")  // for Java codegen
+
+}
+
 tasks {
+    // added by aaron: https://plugins.jetbrains.com/docs/intellij/tools-gradle-intellij-plugin-faq.html#how-to-disable-building-searchable-options
+    buildSearchableOptions {
+        enabled = false
+    }
+
     // Set the JVM compatibility versions
     properties("javaVersion").let {
         withType<JavaCompile> {
             sourceCompatibility = it
             targetCompatibility = it
         }
-        withType<KotlinCompile> {
-            kotlinOptions.jvmTarget = it
-        }
+//        withType<KotlinCompile> {
+//            kotlinOptions.jvmTarget = it
+//        }
     }
 
     wrapper {
