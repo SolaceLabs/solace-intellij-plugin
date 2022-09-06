@@ -1,4 +1,4 @@
-package com.solace.aaron.ideaplugin1;
+package community.solace.ep.idea.plugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,12 +12,12 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
-import com.solace.aaron.ideaplugin1.nextgen.ApplicationsTabWindow;
-import com.solace.aaron.ideaplugin1.nextgen.EventApiProductsTabWindow;
-import com.solace.aaron.ideaplugin1.nextgen.EventApisTabWindow;
-import com.solace.aaron.ideaplugin1.nextgen.EventsTabWindow;
-import com.solace.aaron.ideaplugin1.nextgen.SchemaTabWindow;
 
+import community.solace.ep.idea.plugin.nextgen.ApplicationsTabWindow;
+import community.solace.ep.idea.plugin.nextgen.EventApiProductsTabWindow;
+import community.solace.ep.idea.plugin.nextgen.EventApisTabWindow;
+import community.solace.ep.idea.plugin.nextgen.EventsTabWindow;
+import community.solace.ep.idea.plugin.nextgen.SchemaTabWindow;
 import icons.MyIcons;
 
 /**

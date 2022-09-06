@@ -1,4 +1,4 @@
-package com.solace.aaron.ideaplugin1.utils;
+package community.solace.ep.idea.plugin.utils;
 
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;

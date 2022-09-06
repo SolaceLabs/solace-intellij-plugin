@@ -1,4 +1,4 @@
-package com.solace.aaron.ideaplugin1.nextgen;
+package community.solace.ep.idea.plugin.nextgen;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -133,9 +133,11 @@ public class PortalRowObjectTreeNode {
 		stack.addAll(children);  // should be domains usually
 		while (!stack.isEmpty()) {
 			PortalRowObjectTreeNode node = stack.remove(0);
-			if (!hidden) rows.add(node);
-			if (node.isExpanded() && node.hasChildren()) {
-				stack.addAll(0, node.children);
+			if (!hidden) {
+				rows.add(node);
+				if (node.isExpanded() && node.hasChildren()) {
+					stack.addAll(0, node.children);
+				}
 			}
 		}
 		return rows;

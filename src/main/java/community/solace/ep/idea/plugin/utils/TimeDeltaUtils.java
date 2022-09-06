@@ -1,12 +1,10 @@
-package com.solace.aaron.ideaplugin1.utils;
+package community.solace.ep.idea.plugin.utils;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
-
-import com.solace.aaron.ideaplugin1.service.TokenHolder;
 
 public class TimeDeltaUtils {
 

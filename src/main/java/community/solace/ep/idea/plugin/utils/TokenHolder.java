@@ -1,4 +1,4 @@
-package com.solace.aaron.ideaplugin1.service;
+package community.solace.ep.idea.plugin.utils;
 
 import java.util.Properties;
 

@@ -1,4 +1,4 @@
-package com.solace.aaron.ideaplugin1.nextgen;
+package community.solace.ep.idea.plugin.nextgen;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,18 +9,17 @@ import javax.swing.JPanel;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
-import com.solace.aaron.ideaplugin1.LoadRefreshButton;
-import com.solace.aaron.ideaplugin1.utils.TimeDeltaUtils;
-import com.solace.aaron.ideaplugin1.utils.TopicUtils;
 
 import community.solace.ep.client.model.Application;
 import community.solace.ep.client.model.ApplicationDomain;
+import community.solace.ep.client.model.ApplicationVersion;
 import community.solace.ep.client.model.Event;
-import community.solace.ep.client.model.EventApi;
-import community.solace.ep.client.model.EventApiVersion;
 import community.solace.ep.client.model.EventVersion;
 import community.solace.ep.client.model.SchemaObject;
 import community.solace.ep.client.model.SchemaVersion;
+import community.solace.ep.idea.plugin.LoadRefreshButton;
+import community.solace.ep.idea.plugin.utils.TimeDeltaUtils;
+import community.solace.ep.idea.plugin.utils.TopicUtils;
 import community.solace.ep.wrapper.EventPortalObjectType;
 import community.solace.ep.wrapper.EventPortalWrapper;
 import icons.MyIcons;
@@ -28,26 +27,28 @@ import icons.MyIcons;
 /**
  * This window represents one of the tabs ("content") on the main PS+Portal tool.  It has a toolbar and a content area.
  */
-public class EventApisTabWindow implements LoadRefreshButton.Observer, PortalToolbarListener {
+public class ApplicationsTabWindow implements LoadRefreshButton.Observer, PortalToolbarListener {
 	
     private final JPanel contentToolWindow;  // the whole simple window
-    private final PortalTabToolbar applicationsToolbarPanel;
+    private final PortalTabToolbar toolbarPanel;
+//    private final EPAppsTableModel tableModel;
     private final EPAppsTableModel2 tableModel2;
+//    private final AppsTableResultsTable tableView;
     private final AppsTableResultsTable2 tableView2;
     private final AppsTableResultsPanel2 tableResultsPanel;
     
-	private static final Logger LOG = Logger.getInstance(EventApisTabWindow.class);
+	private static final Logger LOG = Logger.getInstance(ApplicationsTabWindow.class);
 
-	public EventApisTabWindow() {
+	public ApplicationsTabWindow() {
     	// init the JPanel
     	SimpleToolWindowPanel sp = new SimpleToolWindowPanel(false, true);  // intellij component
 		tableModel2 = new EPAppsTableModel2(EPAppsTableModel2.generateColumnInfo());
         tableView2 = new AppsTableResultsTable2(tableModel2);
-        this.applicationsToolbarPanel = new PortalTabToolbar(this);
+        this.toolbarPanel = new PortalTabToolbar(this);
 
         tableResultsPanel = new AppsTableResultsPanel2(tableView2);
 
-        sp.setToolbar(applicationsToolbarPanel);
+        sp.setToolbar(toolbarPanel);
         sp.setContent(tableResultsPanel);
         this.contentToolWindow = sp;
     }
@@ -59,7 +60,7 @@ public class EventApisTabWindow implements LoadRefreshButton.Observer, PortalToo
 
 	@Override
 	public void refreshEventPortalData() {
-		if (this.applicationsToolbarPanel.currentSortStateObjects.get()) {
+		if (this.toolbarPanel.currentSortStateObjects.get()) {
 			refreshObjectsNested();
 		} else {
 			refreshAlphaNested();
@@ -102,66 +103,65 @@ public class EventApisTabWindow implements LoadRefreshButton.Observer, PortalToo
 	}
 
 
-	private void generateTree(PortalRowObjectTreeNode parent, EventApi api, ApplicationDomain domain, boolean domainInNotes) {
+	private void generateTree(PortalRowObjectTreeNode parent, Application app, ApplicationDomain domain, boolean domainInNotes) {
 //		List<PortalRowObject> rows = new ArrayList<>();
-		PortalRowObjectTreeNode apiPro = new PortalRowObjectTreeNode(EventPortalObjectType.EVENT_API, api.getId());
-		parent.addChild(apiPro);
-		apiPro.setIcon(MyIcons.apiLarge);
-		apiPro.setName(api.getName() + (api.isShared() ? "*" : ""));
-		if (api.isShared()) apiPro.addNote("Shared");
-		apiPro.addNote(String.format("%s Event API",
-				TopicUtils.capitalFirst(api.getBrokerType().getValue())));
-		apiPro.addNote(String.format("%d %s",
-				api.getNumberOfVersions(),
-				TopicUtils.pluralize("Version",  api.getNumberOfVersions())));
-		
-		if (domainInNotes) apiPro.addNote("Domain: " + domain.getName());
-		apiPro.setLink(String.format(TopicUtils.EVENT_API_URL, domain.getId(), api.getId()));
-		apiPro.setLastUpdated(TimeDeltaUtils.formatTime(api.getUpdatedTime()));
-		apiPro.setLastUpdatedByUser(api.getChangedBy());
-		apiPro.setCreatedByUser(api.getCreatedBy());
-		
-		for (EventApiVersion apiVer : EventPortalWrapper.INSTANCE.getEventApiVersionsForEventApiId(api.getId())) {
+		PortalRowObjectTreeNode appPro = new PortalRowObjectTreeNode(EventPortalObjectType.APPLICATION, app.getId());
+		parent.addChild(appPro);
+		appPro.setIcon(MyIcons.appLarge);
+		appPro.setName(app.getName());
+		appPro.addNote(String.format("%s %s App",
+				TopicUtils.capitalFirst(app.getApplicationType()),
+				TopicUtils.capitalFirst(app.getBrokerType().getValue())));
+		appPro.addNote(String.format("%d %s",
+				app.getNumberOfVersions(),
+				TopicUtils.pluralize("Version",  app.getNumberOfVersions())));
+		if (domainInNotes) appPro.addNote("Domain: " + domain.getName());
+		appPro.setLink(String.format(TopicUtils.APP_URL, domain.getId(), app.getId()));
+		appPro.setLastUpdated(TimeDeltaUtils.formatTime(app.getUpdatedTime()));
+		appPro.setLastUpdatedByUser(app.getChangedBy());
+		appPro.setCreatedByUser(app.getCreatedBy());
+
+		for (ApplicationVersion appVer : EventPortalWrapper.INSTANCE.getApplicationVersionsForApplicationId(app.getId())) {
 //			appVer.get
-			PortalRowObjectTreeNode apiVerPro = new PortalRowObjectTreeNode(EventPortalObjectType.EVENT_API_VERSION, apiVer.getId());
-			apiPro.addChild(apiVerPro);
-			apiVerPro.setIcon(MyIcons.apiSmall);
-			apiVerPro.setName("v" + apiVer.getVersion());
+			PortalRowObjectTreeNode appVerPro = new PortalRowObjectTreeNode(EventPortalObjectType.APPLICATION_VERSION, appVer.getId());
+			appPro.addChild(appVerPro);
+			appVerPro.setIcon(MyIcons.appSmall);
+			appVerPro.setName("v" + appVer.getVersion());
 			
-			if (apiVer.getProducedEventVersionIds().size() == 0 && apiVer.getConsumedEventVersionIds().size() == 0) {
-				apiVerPro.addNote("0 Events published or subscribed");
+			if (appVer.getDeclaredProducedEventVersionIds().size() == 0 && appVer.getDeclaredConsumedEventVersionIds().size() == 0) {
+				appVerPro.addNote("0 Events published or subscribed");
 			} else {
-				apiVerPro.addNote(String.format("%d %s",
-						apiVer.getProducedEventVersionIds().size(),
-						TopicUtils.pluralize("Pub'ed Event", apiVer.getProducedEventVersionIds().size())));
-				apiVerPro.addNote(String.format("%d %s",
-						apiVer.getConsumedEventVersionIds().size(),
-						TopicUtils.pluralize("Sub'ed Event", apiVer.getConsumedEventVersionIds().size())));
+				appVerPro.addNote(String.format("%d %s",
+						appVer.getDeclaredProducedEventVersionIds().size(),
+						TopicUtils.pluralize("Pub'ed Event", appVer.getDeclaredProducedEventVersionIds().size())));
+				appVerPro.addNote(String.format("%d %s",
+						appVer.getDeclaredConsumedEventVersionIds().size(),
+						TopicUtils.pluralize("Sub'ed Event", appVer.getDeclaredConsumedEventVersionIds().size())));
 			}
-			apiVerPro.setState(EventPortalWrapper.INSTANCE.getState(apiVer.getStateId()).getName());
-			apiVerPro.setLink(String.format(TopicUtils.EVENT_API_VER_URL, domain.getId(), api.getId(), apiVer.getId()));
-			apiVerPro.setLastUpdated(TimeDeltaUtils.formatTime(apiVer.getUpdatedTime()));
-			apiVerPro.setLastUpdatedByUser(apiVer.getChangedBy());
-			apiVerPro.setCreatedByUser(apiVer.getCreatedBy());
+			appVerPro.setState(EventPortalWrapper.INSTANCE.getState(appVer.getStateId()).getName());
+			appVerPro.setLink(String.format(TopicUtils.APP_VER_URL, domain.getId(), app.getId(), appVer.getId()));
+			appVerPro.setLastUpdated(TimeDeltaUtils.formatTime(appVer.getUpdatedTime()));
+			appVerPro.setLastUpdatedByUser(appVer.getChangedBy());
+			appVerPro.setCreatedByUser(appVer.getCreatedBy());
 			
 			// make copies so we don't mess up the originals
-			List<String> pubEventVerIds = new ArrayList<>(apiVer.getProducedEventVersionIds());
-			List<String> subEventVerIds = new ArrayList<>(apiVer.getConsumedEventVersionIds());
+			List<String> pubEventVerIds = new ArrayList<>(appVer.getDeclaredProducedEventVersionIds());
+			List<String> subEventVerIds = new ArrayList<>(appVer.getDeclaredConsumedEventVersionIds());
 			List<String> both = new ArrayList<>(pubEventVerIds);
 			both.retainAll(subEventVerIds);
 			pubEventVerIds.removeAll(both);
 			subEventVerIds.removeAll(both);
 			for (String eventVerId : both) {  // for all EventVersions this AppVer produces...
 				EventVersion eventVer = EventPortalWrapper.INSTANCE.getEventVersion(eventVerId);
-				apiVerPro.addChild(buildEventVerTree(MyIcons.EvetnSmallBoth, eventVer, domain));
+				appVerPro.addChild(buildEventVerTree(MyIcons.EvetnSmallBoth, eventVer, domain));
 			}
 			for (String eventVerId : pubEventVerIds) {  // for all EventVersions this AppVer produces...
 				EventVersion eventVer = EventPortalWrapper.INSTANCE.getEventVersion(eventVerId);
-				apiVerPro.addChild(buildEventVerTree(MyIcons.EventSmallPub, eventVer, domain));
+				appVerPro.addChild(buildEventVerTree(MyIcons.EventSmallPub, eventVer, domain));
 			}
 			for (String eventVerId : subEventVerIds) {  // for all EventVersions this AppVer produces...
 				EventVersion eventVer = EventPortalWrapper.INSTANCE.getEventVersion(eventVerId);
-				apiVerPro.addChild(buildEventVerTree(MyIcons.EventSmallSub, eventVer, domain));
+				appVerPro.addChild(buildEventVerTree(MyIcons.EventSmallSub, eventVer, domain));
 			}
 		}
 	}
@@ -172,19 +172,28 @@ public class EventApisTabWindow implements LoadRefreshButton.Observer, PortalToo
 			for (ApplicationDomain domain : EventPortalWrapper.INSTANCE.getDomains()) {
 				PortalRowObjectTreeNode row = new PortalRowObjectTreeNode(EventPortalObjectType.DOMAIN, domain.getId());
 				row.setIcon(MyIcons.DomainLarge);
+				if (toolbarPanel.hideEmptyDomains && domain.getStats().getApplicationCount() == 0) continue;
 				root.addChild(row);
 				row.setName(domain.getName());
 				row.addNote(String.format("%d %s",
-						domain.getStats().getEventApiCount(),
-						TopicUtils.pluralize("Event API",  domain.getStats().getEventApiCount())
+						domain.getStats().getApplicationCount(),
+						TopicUtils.pluralize("Application",  domain.getStats().getApplicationCount())
+						
+//						domain.getStats().getEventCount(),
+//						TopicUtils.pluralize("Event",  domain.getStats().getEventCount()),
+//						domain.getStats().getSchemaCount(),
+//						TopicUtils.pluralize("Schema",  domain.getStats().getSchemaCount()),
+//						domain.getStats().getEventApiCount(),
+//						TopicUtils.pluralize("Event API",  domain.getStats().getEventApiCount()
 						));
+//				row.setState("");
 				row.setLink(String.format(TopicUtils.DOMAIN_URL, domain.getId()));
 				row.setLastUpdated(TimeDeltaUtils.formatTime(domain.getUpdatedTime()));
 				row.setLastUpdatedByUser(domain.getChangedBy());
 				row.setCreatedByUser(domain.getCreatedBy());
 
-				for (EventApi eventApi : EventPortalWrapper.INSTANCE.getEventApisForDomainId(domain.getId())) {
-					generateTree(row, eventApi, domain, false);
+				for (Application app : EventPortalWrapper.INSTANCE.getApplicationsForDomainId(domain.getId())) {
+					generateTree(row, app, domain, false);
 				}
 			}
 		} catch (RuntimeException e) {
@@ -204,8 +213,8 @@ public class EventApisTabWindow implements LoadRefreshButton.Observer, PortalToo
 	public void refreshAlphaNested() {
 		PortalRowObjectTreeNode root = new PortalRowObjectTreeNode(null, "");  // root
 		try {
-			for (EventApi eventApi : EventPortalWrapper.INSTANCE.getEventApis()) {
-				generateTree(root, eventApi, EventPortalWrapper.INSTANCE.getDomain(eventApi.getApplicationDomainId()), true);
+			for (Application app : EventPortalWrapper.INSTANCE.getApplications()) {
+				generateTree(root, app, EventPortalWrapper.INSTANCE.getDomain(app.getApplicationDomainId()), true);
 			}
 		} catch (RuntimeException e) {
 			LOG.error(e);
@@ -246,8 +255,7 @@ public class EventApisTabWindow implements LoadRefreshButton.Observer, PortalToo
 
 	@Override
 	public void hideEmptyDomains() {
-		// TODO Auto-generated method stub
-		
+		refreshEventPortalData();
 	}
 
 }

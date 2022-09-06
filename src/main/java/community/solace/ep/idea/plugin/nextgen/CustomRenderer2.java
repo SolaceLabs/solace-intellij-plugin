@@ -1,4 +1,4 @@
-package com.solace.aaron.ideaplugin1.nextgen;
+package community.solace.ep.idea.plugin.nextgen;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -22,8 +22,8 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.ui.components.ActionLink;
 import com.intellij.ui.components.AnActionLink;
-import com.solace.aaron.ideaplugin1.utils.EPObjectHelper;
 
+import community.solace.ep.idea.plugin.utils.EPObjectHelper;
 import community.solace.ep.wrapper.EventPortalObjectType;
 import community.solace.ep.wrapper.EventPortalWrapper;
 

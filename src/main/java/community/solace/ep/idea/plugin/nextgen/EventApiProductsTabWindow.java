@@ -1,4 +1,4 @@
-package com.solace.aaron.ideaplugin1.nextgen;
+package community.solace.ep.idea.plugin.nextgen;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -6,9 +6,6 @@ import javax.swing.JPanel;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
-import com.solace.aaron.ideaplugin1.LoadRefreshButton;
-import com.solace.aaron.ideaplugin1.utils.TimeDeltaUtils;
-import com.solace.aaron.ideaplugin1.utils.TopicUtils;
 
 import community.solace.ep.client.model.ApplicationDomain;
 import community.solace.ep.client.model.EventApi;
@@ -17,6 +14,9 @@ import community.solace.ep.client.model.EventApiProductVersion;
 import community.solace.ep.client.model.EventApiVersion;
 import community.solace.ep.client.model.Plan;
 import community.solace.ep.client.model.SolaceMessagingService;
+import community.solace.ep.idea.plugin.LoadRefreshButton;
+import community.solace.ep.idea.plugin.utils.TimeDeltaUtils;
+import community.solace.ep.idea.plugin.utils.TopicUtils;
 import community.solace.ep.wrapper.EventPortalObjectType;
 import community.solace.ep.wrapper.EventPortalWrapper;
 import icons.MyIcons;

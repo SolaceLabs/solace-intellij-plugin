@@ -1,4 +1,7 @@
-package com.solace.aaron.ideaplugin1.nextgen;
+package community.solace.ep.idea.plugin.nextgen;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -6,9 +9,6 @@ import javax.swing.JPanel;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
-import com.solace.aaron.ideaplugin1.LoadRefreshButton;
-import com.solace.aaron.ideaplugin1.utils.TimeDeltaUtils;
-import com.solace.aaron.ideaplugin1.utils.TopicUtils;
 
 import community.solace.ep.client.model.Application;
 import community.solace.ep.client.model.ApplicationDomain;
@@ -17,6 +17,9 @@ import community.solace.ep.client.model.Event;
 import community.solace.ep.client.model.EventVersion;
 import community.solace.ep.client.model.SchemaObject;
 import community.solace.ep.client.model.SchemaVersion;
+import community.solace.ep.idea.plugin.LoadRefreshButton;
+import community.solace.ep.idea.plugin.utils.TimeDeltaUtils;
+import community.solace.ep.idea.plugin.utils.TopicUtils;
 import community.solace.ep.wrapper.EventPortalObjectType;
 import community.solace.ep.wrapper.EventPortalWrapper;
 import icons.MyIcons;
@@ -24,7 +27,7 @@ import icons.MyIcons;
 /**
  * This window represents one of the tabs ("content") on the main PS+Portal tool.  It has a toolbar and a content area.
  */
-public class SchemaTabWindow implements LoadRefreshButton.Observer, PortalToolbarListener {
+public class EventsTabWindow implements LoadRefreshButton.Observer, PortalToolbarListener {
 	
     private final JPanel contentToolWindow;  // the whole simple window
     private final PortalTabToolbar applicationsToolbarPanel;
@@ -34,9 +37,9 @@ public class SchemaTabWindow implements LoadRefreshButton.Observer, PortalToolba
     private final AppsTableResultsTable2 tableView2;
     private final AppsTableResultsPanel2 tableResultsPanel;
     
-	private static final Logger LOG = Logger.getInstance(SchemaTabWindow.class);
+	private static final Logger LOG = Logger.getInstance(EventsTabWindow.class);
 
-	public SchemaTabWindow() {
+	public EventsTabWindow() {
     	// init the JPanel
     	SimpleToolWindowPanel sp = new SimpleToolWindowPanel(false, true);  // intellij component
 		tableModel2 = new EPAppsTableModel2(EPAppsTableModel2.generateColumnInfo()/* , new ArrayList<>() */);
@@ -91,7 +94,7 @@ public class SchemaTabWindow implements LoadRefreshButton.Observer, PortalToolba
 //
 		
 		
-		if (!domain.equals(appDomain)) appVerPro.addNote("Domain: " + domain.getName());
+		if (!domain.equals(appDomain)) appVerPro.addNote("Domain: " + appDomain.getName());
 		appVerPro.setState(EventPortalWrapper.INSTANCE.getState(appVer.getStateId()).getName());
 //		appVerPro.setDetails(TopicUtils.buildTopic(eventVer.getDeliveryDescriptor()));
 		appVerPro.setLink(String.format(TopicUtils.APP_VER_URL, appDomain.getId(), app.getId(), appVer.getId()));
@@ -113,93 +116,78 @@ public class SchemaTabWindow implements LoadRefreshButton.Observer, PortalToolba
 		return appVerPro;	
 	}
 
-	
-	private PortalRowObjectTreeNode buildEventVerTree(Icon icon, EventVersion eventVer, ApplicationDomain domain) {
-		
-		Event event = EventPortalWrapper.INSTANCE.getEvent(eventVer.getEventId());
-		ApplicationDomain origDomain = EventPortalWrapper.INSTANCE.getDomain(event.getApplicationDomainId());
-		PortalRowObjectTreeNode eventVerPro = new PortalRowObjectTreeNode(EventPortalObjectType.EVENT_VERSION, eventVer.getId());
-		// is there a schema for this Event?
-		eventVerPro.setIcon(icon);
-		eventVerPro.setName(String.format("%s%s%s v%s",
-				origDomain.getId().equals(domain.getId()) ? "" : "(EXT) ",
-				event.getName(),
-				event.isShared() ? "*" : "",
-				eventVer.getVersion()));
-		eventVerPro.setState(EventPortalWrapper.INSTANCE.getState(eventVer.getStateId()).getName());
-		eventVerPro.setDetails(TopicUtils.buildTopic(eventVer.getDeliveryDescriptor()));
-		eventVerPro.setLink(String.format(TopicUtils.EVENT_VER_URL, origDomain.getId(), event.getId(), eventVer.getId()));
-		eventVerPro.setLastUpdated(TimeDeltaUtils.formatTime(eventVer.getUpdatedTime()));
-		eventVerPro.setLastUpdatedByUser(eventVer.getChangedBy());
-		eventVerPro.setCreatedByUser(eventVer.getCreatedBy());
-		String broker = TopicUtils.capitalFirst(eventVer.getDeliveryDescriptor().getBrokerType());
-		if (broker == null) broker = "N/A";
-		eventVerPro.addNote(String.format("%s Message", TopicUtils.capitalFirst(broker)));
-		if (EventPortalWrapper.INSTANCE.getSchemaVersion(eventVer.getSchemaVersionId()) != null) {
-			SchemaVersion schemaVersion = EventPortalWrapper.INSTANCE.getSchemaVersion(eventVer.getSchemaVersionId());
-			SchemaObject schema = EventPortalWrapper.INSTANCE.getSchema(schemaVersion.getSchemaId());
-//			row.addNote(TopicUtils.capitalFirst(schema.getContentType()) + " Payload");
-			eventVerPro.addNote(String.format("%s Payload", TopicUtils.capitalFirst(schema.getContentType())));
-		} else if (eventVer.getSchemaPrimitiveType() != null) {
-			eventVerPro.addNote(String.format("%s Payload", TopicUtils.capitalFirst(eventVer.getSchemaPrimitiveType().toString())));
-		} else {
-			eventVerPro.addNote("No Schema");
-		}
-		return eventVerPro;	
-	}
 
-	
-	
-
-	private void generateTree(PortalRowObjectTreeNode parent, SchemaObject schema, ApplicationDomain domain, boolean domainInNotes) {
+	private void generateTree(PortalRowObjectTreeNode parent, Event event, ApplicationDomain domain, boolean domainInNotes) {
 //		List<PortalRowObject> rows = new ArrayList<>();
-		PortalRowObjectTreeNode schemaPro = new PortalRowObjectTreeNode(EventPortalObjectType.SCHEMA, schema.getId());
-		parent.addChild(schemaPro);
-		schemaPro.setIcon(MyIcons.schemaLarge);
-		schemaPro.setName(schema.getName() + (schema.isShared() ? "*" : ""));
-		if (schema.isShared()) schemaPro.addNote("Shared");
-		schemaPro.addNote(String.format("%d %s",
-				schema.getNumberOfVersions(),
-				TopicUtils.pluralize("Version",  schema.getNumberOfVersions())));
-		if (domainInNotes) schemaPro.addNote("Domain: " + domain.getName());
-		schemaPro.setLink(String.format(TopicUtils.SCHEMA_URL, domain.getId(), schema.getId()));
-		schemaPro.setLastUpdated(TimeDeltaUtils.formatTime(schema.getUpdatedTime()));
-		schemaPro.setLastUpdatedByUser(schema.getChangedBy());
-		schemaPro.setCreatedByUser(schema.getCreatedBy());
+		PortalRowObjectTreeNode eventPro = new PortalRowObjectTreeNode(EventPortalObjectType.EVENT, event.getId());
+		parent.addChild(eventPro);
+		eventPro.setIcon(MyIcons.EventLarge);
+		eventPro.setName(event.getName() + (event.isShared() ? "*" : ""));
+		if (event.isShared()) eventPro.addNote("Shared");
+		eventPro.addNote(String.format("%d %s",
+				event.getNumberOfVersions(),
+				TopicUtils.pluralize("Version",  event.getNumberOfVersions())));
+		if (domainInNotes) eventPro.addNote("Domain: " + domain.getName());
+		eventPro.setLink(String.format(TopicUtils.EVENT_URL, domain.getId(), event.getId()));
+		eventPro.setLastUpdated(TimeDeltaUtils.formatTime(event.getUpdatedTime()));
+		eventPro.setLastUpdatedByUser(event.getChangedBy());
+		eventPro.setCreatedByUser(event.getCreatedBy());
 
-		for (SchemaVersion schemaVer : EventPortalWrapper.INSTANCE.getSchemaVersionsForSchemaId(schema.getId())) {
-			PortalRowObjectTreeNode schemaVerPro = new PortalRowObjectTreeNode(EventPortalObjectType.SCHEMA_VERSION, schemaVer.getId());
-			schemaPro.addChild(schemaVerPro);
-			schemaVerPro.setIcon(MyIcons.schemaSmall);
-			schemaVerPro.setName("v" + schemaVer.getVersion());
-
-			schemaVerPro.addNote(String.format("%s Payload", TopicUtils.capitalFirst(schema.getContentType())));
-//			} else if (schemaVer.getSchemaPrimitiveType() != null) {
-//				schemaVerPro.addNote(String.format("%s Payload", TopicUtils.capitalFirst(schemaVer.getSchemaPrimitiveType().toString())));
-//			} else {
-//				schemaVerPro.addNote("No Schema");
-//			}
-			
-			if (schemaVer.getReferencedByEventVersionIds() == null || schemaVer.getReferencedByEventVersionIds().size() == 0) {
-				schemaVerPro.addNote("0 Events referencing");
+		for (EventVersion eventVer : EventPortalWrapper.INSTANCE.getEventVersionsForEventId(event.getId())) {
+			PortalRowObjectTreeNode eventVerPro = new PortalRowObjectTreeNode(EventPortalObjectType.EVENT_VERSION, eventVer.getId());
+			eventPro.addChild(eventVerPro);
+			eventVerPro.setIcon(MyIcons.EventSmall);
+			eventVerPro.setName("v" + eventVer.getVersion());
+			if (EventPortalWrapper.INSTANCE.getSchemaVersion(eventVer.getSchemaVersionId()) != null) {
+				SchemaVersion schemaVersion = EventPortalWrapper.INSTANCE.getSchemaVersion(eventVer.getSchemaVersionId());
+				SchemaObject schema = EventPortalWrapper.INSTANCE.getSchema(schemaVersion.getSchemaId());
+//				row.addNote(TopicUtils.capitalFirst(schema.getContentType()) + " Payload");
+				eventVerPro.addNote(String.format("%s Payload", TopicUtils.capitalFirst(schema.getContentType())));
+			} else if (eventVer.getSchemaPrimitiveType() != null) {
+				eventVerPro.addNote(String.format("%s Payload", TopicUtils.capitalFirst(eventVer.getSchemaPrimitiveType().getValue())));
 			} else {
-				schemaVerPro.addNote(String.format("%d %s referencing",
-						schemaVer.getReferencedByEventVersionIds().size(),
-						TopicUtils.pluralize("Event", schemaVer.getReferencedByEventVersionIds().size())));
+				eventVerPro.addNote("No Schema");
+			}
+			
+			if (eventVer.getDeclaredProducingApplicationVersionIds().size() == 0 && eventVer.getDeclaredConsumingApplicationVersionIds().size() == 0) {
+				eventVerPro.addNote("0 Apps pub'ing or sub'ing");
+			} else {
+				eventVerPro.addNote(String.format("%d %s",
+						eventVer.getDeclaredProducingApplicationVersionIds().size(),
+						TopicUtils.pluralize("Pub'ing App", eventVer.getDeclaredProducingApplicationVersionIds().size())));
+				eventVerPro.addNote(String.format("%d %s",
+						eventVer.getDeclaredConsumingApplicationVersionIds().size(),
+						TopicUtils.pluralize("Sub'ing App", eventVer.getDeclaredConsumingApplicationVersionIds().size())));
 			}
 			
 			
-			schemaVerPro.setState(EventPortalWrapper.INSTANCE.getState(schemaVer.getStateId()).getName());
-			schemaVerPro.setLink(String.format(TopicUtils.SCHEMA_VER_URL, domain.getId(), schema.getId(), schemaVer.getId()));
-			schemaVerPro.setLastUpdated(TimeDeltaUtils.formatTime(schemaVer.getUpdatedTime()));
-			schemaVerPro.setLastUpdatedByUser(schemaVer.getChangedBy());
-			schemaVerPro.setCreatedByUser(schemaVer.getCreatedBy());
+			eventVerPro.setState(EventPortalWrapper.INSTANCE.getState(eventVer.getStateId()).getName());
+			eventVerPro.setLink(String.format(TopicUtils.EVENT_VER_URL, domain.getId(), event.getId(), eventVer.getId()));
+			eventVerPro.setDetails(TopicUtils.buildTopic(eventVer.getDeliveryDescriptor()));
+			eventVerPro.setLastUpdated(TimeDeltaUtils.formatTime(eventVer.getUpdatedTime()));
+			eventVerPro.setLastUpdatedByUser(eventVer.getChangedBy());
+			eventVerPro.setCreatedByUser(eventVer.getCreatedBy());
 			
-			if (schemaVer.getReferencedByEventVersionIds() != null) {
-				for (String eventVerId : schemaVer.getReferencedByEventVersionIds()) {
-					EventVersion eventVer = EventPortalWrapper.INSTANCE.getEventVersion(eventVerId);
-					schemaVerPro.addChild(buildEventVerTree(MyIcons.EventSmall, eventVer, domain));
-				}
+			// make copies so we don't mess up the originals
+			List<String> pubAppVerIds = new ArrayList<>(eventVer.getDeclaredProducingApplicationVersionIds());
+			List<String> subAppVerIds = new ArrayList<>(eventVer.getDeclaredConsumingApplicationVersionIds());
+			List<String> both = new ArrayList<>(pubAppVerIds);
+			both.retainAll(subAppVerIds);
+			pubAppVerIds.removeAll(both);
+			subAppVerIds.removeAll(both);
+			
+			
+			for (String appVerId : both) {
+				ApplicationVersion appVer = EventPortalWrapper.INSTANCE.getApplicationVersion(appVerId);
+				eventVerPro.addChild(buildAppVerTree(MyIcons.appSmallBoth, appVer, domain));
+			}
+			for (String appVerId : pubAppVerIds) {
+				ApplicationVersion appVer = EventPortalWrapper.INSTANCE.getApplicationVersion(appVerId);
+				eventVerPro.addChild(buildAppVerTree(MyIcons.appSmallPub, appVer, domain));
+			}
+			for (String appVerId : subAppVerIds) {
+				ApplicationVersion appVer = EventPortalWrapper.INSTANCE.getApplicationVersion(appVerId);
+				eventVerPro.addChild(buildAppVerTree(MyIcons.appSmallSub, appVer, domain));
 			}
 		}
 	}
@@ -213,16 +201,16 @@ public class SchemaTabWindow implements LoadRefreshButton.Observer, PortalToolba
 				root.addChild(row);
 				row.setName(domain.getName());
 				row.addNote(String.format("%d %s",
-						domain.getStats().getSchemaCount(),
-						TopicUtils.pluralize("Schema",  domain.getStats().getSchemaCount())
+						domain.getStats().getEventCount(),
+						TopicUtils.pluralize("Event",  domain.getStats().getEventCount())
 						));
 				row.setLink(String.format(TopicUtils.DOMAIN_URL, domain.getId()));
 				row.setLastUpdated(TimeDeltaUtils.formatTime(domain.getUpdatedTime()));
 				row.setLastUpdatedByUser(domain.getChangedBy());
 				row.setCreatedByUser(domain.getCreatedBy());
 
-				for (SchemaObject schema : EventPortalWrapper.INSTANCE.getSchemasForDomainId(domain.getId())) {
-					generateTree(row, schema, domain, false);
+				for (Event event : EventPortalWrapper.INSTANCE.getEventsForDomainId(domain.getId())) {
+					generateTree(row, event, domain, false);
 				}
 			}
 		} catch (RuntimeException e) {
@@ -242,8 +230,8 @@ public class SchemaTabWindow implements LoadRefreshButton.Observer, PortalToolba
 	public void refreshAlphaNested() {
 		PortalRowObjectTreeNode root = new PortalRowObjectTreeNode(null, "");  // root
 		try {
-			for (SchemaObject schema : EventPortalWrapper.INSTANCE.getSchemas()) {
-				generateTree(root, schema, EventPortalWrapper.INSTANCE.getDomain(schema.getApplicationDomainId()), false);
+			for (Event event : EventPortalWrapper.INSTANCE.getEvents()) {
+				generateTree(root, event, EventPortalWrapper.INSTANCE.getDomain(event.getApplicationDomainId()), true);
 			}
 		} catch (RuntimeException e) {
 			LOG.error(e);

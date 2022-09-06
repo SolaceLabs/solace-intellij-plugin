@@ -1,4 +1,4 @@
-package com.solace.aaron.ideaplugin1.nextgen;
+package community.solace.ep.idea.plugin.nextgen;
 
 import java.awt.FlowLayout;
 import java.util.concurrent.atomic.AtomicBoolean;

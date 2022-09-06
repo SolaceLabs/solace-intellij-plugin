@@ -1,4 +1,4 @@
-package com.solace.aaron.ideaplugin1.test;
+package community.solace.ep.idea.plugin.test;
 
 import java.util.HashMap;
 import java.util.Map;

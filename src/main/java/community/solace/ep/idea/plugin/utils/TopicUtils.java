@@ -1,4 +1,4 @@
-package com.solace.aaron.ideaplugin1.utils;
+package community.solace.ep.idea.plugin.utils;
 
 import community.solace.ep.client.model.Address;
 import community.solace.ep.client.model.AddressLevel;

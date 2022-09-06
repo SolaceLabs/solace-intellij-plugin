@@ -1,4 +1,4 @@
-package com.solace.aaron.ideaplugin1.nextgen;
+package community.solace.ep.idea.plugin.nextgen;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -22,13 +22,13 @@ import com.intellij.notification.Notifications;
 import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.ui.hover.TableHoverListener;
 import com.intellij.ui.table.TableView;
-import com.solace.aaron.ideaplugin1.utils.EPObjectHelper;
 
 import community.solace.ep.client.model.Application;
 import community.solace.ep.client.model.ApplicationVersion;
 import community.solace.ep.client.model.EventVersion;
 import community.solace.ep.client.model.SchemaObject;
 import community.solace.ep.client.model.SchemaVersion;
+import community.solace.ep.idea.plugin.utils.EPObjectHelper;
 import community.solace.ep.wrapper.EventPortalObjectType;
 import community.solace.ep.wrapper.EventPortalWrapper;
 import icons.MyIcons;

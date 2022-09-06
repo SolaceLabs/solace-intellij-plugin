@@ -1,8 +1,8 @@
-package com.solace.aaron.ideaplugin1.utils;
+package community.solace.ep.idea.plugin.utils;
 
 public enum CaretHelper {
 	PUB("Pub'ing", "◑ "),
-	SUB("Sub'ing", "◐ "),
+	SUB("Sub'ing", "�? "),
 	BOTH("Pub/Sub", "◉ "),
 	CARET("", "▶ ")
 	;

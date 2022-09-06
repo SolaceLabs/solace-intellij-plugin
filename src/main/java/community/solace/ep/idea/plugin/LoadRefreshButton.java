@@ -1,4 +1,4 @@
-package com.solace.aaron.ideaplugin1;
+package community.solace.ep.idea.plugin;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -18,8 +18,8 @@ import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.util.ProgressIndicatorBase;
 import com.intellij.ui.AnimatedIcon;
 import com.intellij.util.concurrency.AppExecutorUtil;
-import com.solace.aaron.ideaplugin1.service.TokenHolder;
 
+import community.solace.ep.idea.plugin.utils.TokenHolder;
 import community.solace.ep.wrapper.EventPortalWrapper;
 
 public class LoadRefreshButton extends AnAction {
