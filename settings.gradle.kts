@@ -1,1 +1,1 @@
-rootProject.name = "idea-plugin-1"
+rootProject.name = "event-portal-plugin"

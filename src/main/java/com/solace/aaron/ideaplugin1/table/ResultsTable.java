@@ -9,20 +9,19 @@ import javax.swing.ListSelectionModel;
 
 import com.intellij.ide.BrowserUtil;
 import com.intellij.ui.table.TableView;
-import com.intellij.util.ui.ListTableModel;
 import com.solace.aaron.ideaplugin1.domain.EventPortalDomain;
 
 
-public class ResultsTable extends TableView<EventPortalDomain>
-{
-    public ResultsTable(ListTableModel<EventPortalDomain> model)
-    {
+public class ResultsTable extends TableView<EventPortalDomain> {
+	
+	private static final long serialVersionUID = 1L;
+
+	public ResultsTable(SOTableModel model) {
         super(model);
         this.init();
     }
 
-    private void init()
-    {
+    private void init() {
         this.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         this.setCellSelectionEnabled(true);
         this.setStriped(true);
@@ -38,8 +37,7 @@ public class ResultsTable extends TableView<EventPortalDomain>
                 int rowAtPoint = source.rowAtPoint(e.getPoint());
                 int columnAtPoint = source.columnAtPoint(e.getPoint());
                 // Link column = 2
-                if (2 == columnAtPoint && MouseEvent.BUTTON1 == e.getButton())
-                {
+                if (2 == columnAtPoint && MouseEvent.BUTTON1 == e.getButton()) {
                     BrowserUtil.browse(ResultsTable.this.getValueAt(rowAtPoint, columnAtPoint).toString());
                 }
                 super.mousePressed(e);

@@ -1,5 +1,7 @@
 import org.jetbrains.changelog.markdownToHTML
 //import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.util.Date
+import java.text.SimpleDateFormat
 
 fun properties(key: String) = project.findProperty(key).toString()
 
@@ -9,13 +11,14 @@ plugins {
     // Kotlin support
     //id("org.jetbrains.kotlin.jvm") version "1.6.10"
     // Gradle IntelliJ Plugin
-    id("org.jetbrains.intellij") version "1.8.0"
+    id("org.jetbrains.intellij") version "1.9.0"
     // Gradle Changelog Plugin
     id("org.jetbrains.changelog") version "1.3.1"
     // Gradle Qodana Plugin
     id("org.jetbrains.qodana") version "0.1.13"
 
     id("eclipse")
+    id("idea")
 }
 
 group = properties("pluginGroup")
@@ -55,8 +58,10 @@ qodana {
 
 dependencies {
 // https://stackoverflow.com/questions/54166069/how-do-you-add-local-jar-file-dependency-to-build-gradle-kt-file
-    implementation(files("lib/*.jar"))
+    //implementation(files("lib/ep-openapi-java.jar"))
+    //implementation(files("lib/epapi-client-0.0.3.jar"))
 //fileTree(dir("lib"), include("*.jar"))  // EP 2.0 API Swagger codegen
+    implementation(fileTree(mapOf("dir" to "lib", "include" to listOf("*.jar"))))
 
     // needed for Swagger?
     implementation("com.squareup.okhttp:okhttp:2.7.5")
@@ -138,3 +143,10 @@ tasks {
         channels.set(listOf(properties("pluginVersion").split('-').getOrElse(1) { "default" }.split('.').first()))
     }
 }
+
+//gradle.getTaskGraph().whenReady { graph ->
+//    graph.getAllTasks().last().doLast {
+//        Date now = new Date()
+//        println "\n ***** All completed @ $now  ***"
+//    }
+//}

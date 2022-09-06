@@ -1,4 +1,4 @@
-package com.solace.aaron.ideaplugin1.panel;
+package com.solace.aaron.ideaplugin1.nextgen;
 
 import java.awt.BorderLayout;
 
@@ -8,21 +8,18 @@ import javax.swing.JPanel;
 import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.components.panels.NonOpaquePanel;
 import com.intellij.ui.table.TableView;
-import com.solace.aaron.ideaplugin1.domain.EventPortalDomain;
 
-public class TableResultsPanel extends NonOpaquePanel
+public class AppsTableResultsPanel2 extends NonOpaquePanel
 {
 	private static final long serialVersionUID = 1L;
-	private TableView<EventPortalDomain> resultsTable;
+	private TableView<PortalRowObjectTreeNode> resultsTable;
 
-    public TableResultsPanel(TableView<EventPortalDomain> resultsTable)
-    {
+    public AppsTableResultsPanel2(TableView<PortalRowObjectTreeNode> resultsTable) {
         this.resultsTable = resultsTable;
         this.init();
     }
 
-    private void init()
-    {
+    private void init() {
         this.setBorder(BorderFactory.createEmptyBorder());
         JPanel scrollPanel = new JPanel();
         scrollPanel.setBorder(BorderFactory.createEmptyBorder());

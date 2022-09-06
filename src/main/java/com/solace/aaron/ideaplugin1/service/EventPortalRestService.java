@@ -80,7 +80,7 @@ public final class EventPortalRestService
 //        String searchUrl = String.format(stackBaseUrl, URLEncoder.encode(tag, Charsets.UTF_8), URLEncoder.encode(title, Charsets.UTF_8));
 //        String searchUrl = stackBaseUrl;
 
-        String response = makeRestCall("architecture/applicationDomains");
+        String response = makeRestCall("architecture/applicationDomains?include=stats");
 
         DocumentContext parse = JsonPath.parse(response);
         List<Map<String, Object>> items = parse.read("data");

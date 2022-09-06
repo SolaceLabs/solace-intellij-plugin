@@ -1,18 +1,19 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>com.github.aaron613.ideaplugin1</id>
-    <name>PubSub+ Event Portal v2</name>
-    <vendor email="aaron.lee@solace.com" url="https://github.com/SolaceLabs">Aaron @ Solace</vendor>
+    <id>com.solace.labs.eventportalplugin</id>
+    <name>Solace PubSub+ Event Portal</name>
+    <vendor email="aaron.lee@solace.com" url="https://github.com/SolaceLabs">Solace</vendor>
     <description><![CDATA[
     Queries Solace PubSub+ Event Portal for application information.
     ]]></description>
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <applicationService serviceImplementation="com.github.aaron613.ideaplugin1.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.github.aaron613.ideaplugin1.services.MyProjectService"/>
-
-        <toolWindow factoryClass="com.solace.aaron.ideaplugin1.SolaceEventPortalToolWindowFactory" id="PubSub+ Event Portal" anchor="bottom" icon="MyIcons.portalIcon"/>
+        <!-- ones that came with template -->
+        <!--applicationService serviceImplementation="com.github.aaron613.ideaplugin1.services.MyApplicationService"/>
+        <projectService serviceImplementation="com.github.aaron613.ideaplugin1.services.MyProjectService"/-->
+        <!-- mine based off StackOverflow project -->
+        <toolWindow factoryClass="com.solace.aaron.ideaplugin1.SolaceEventPortalToolWindowFactory" id="Solace Event Portal" anchor="bottom" icon="MyIcons.portalIcon"/>
     </extensions>
 
     <!--applicationListeners>

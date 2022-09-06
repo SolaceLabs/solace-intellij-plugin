@@ -24,8 +24,7 @@ import com.solace.aaron.ideaplugin1.domain.EventPortalDomain;
 import com.solace.aaron.ideaplugin1.service.EventPortalRestService;
 import com.solace.aaron.ideaplugin1.table.SOTableModel;
 
-public class SearchPanel extends NonOpaquePanel
-{
+class SearchPanel extends NonOpaquePanel {
     private static final Logger LOG = Logger.getInstance(SearchPanel.class);
 
 //    private SearchTextField tagSearchField;
@@ -33,15 +32,13 @@ public class SearchPanel extends NonOpaquePanel
     private final TableView<EventPortalDomain> resultsTable;
     private final SOTableModel soTableModel;
 
-    public SearchPanel(SOTableModel tableModel, TableView<EventPortalDomain> resultsTable)
-    {
+    public SearchPanel(SOTableModel tableModel, TableView<EventPortalDomain> resultsTable) {
         this.soTableModel = tableModel;
         this.resultsTable = resultsTable;
         this.init();
     }
 
-    private void init()
-    {
+    private void init() {
         this.setLayout(new FlowLayout(FlowLayout.LEFT));
         this.setBorder(BorderFactory.createEmptyBorder());
 
@@ -68,8 +65,7 @@ public class SearchPanel extends NonOpaquePanel
     }
 
     @NotNull
-    private ActionToolbar createToolbar()
-    {
+    private ActionToolbar createToolbar() {
         DefaultActionGroup actionGroup = new DefaultActionGroup();
         actionGroup.add(new SearchAction());
 //        actionGroup.add(new ClearTableAction());
@@ -77,52 +73,42 @@ public class SearchPanel extends NonOpaquePanel
     }
 
     @NotNull
-    private KeyAdapter keyAdapterSearchStackOverflow()
-    {
+    private KeyAdapter keyAdapterSearchStackOverflow() {
         return new KeyAdapter()
         {
             @Override
             public void keyPressed(KeyEvent e)
             {
-                if (KeyEvent.VK_ENTER == e.getKeyCode())
-                {
+                if (KeyEvent.VK_ENTER == e.getKeyCode()) {
                     SearchPanel.this.searchStackOverflow();
                 }
             }
         };
     }
 
-    private void searchStackOverflow()
-    {
+    private void searchStackOverflow() {
         List<EventPortalDomain> stackOverflowPosts = new ArrayList<>();
-        try
-        {
+        try {
 //            stackOverflowPosts = StackOverflowRestService.getStackOverflowPosts(this.tagSearchField.getText(), this.titleSearchField.getText());
             stackOverflowPosts = EventPortalRestService.getEventPortalDomains();
-        }
-        catch (RuntimeException e)
-        {
+        } catch (RuntimeException e) {
             LOG.error(e.getMessage());
         }
-        if (stackOverflowPosts.isEmpty())
-        {
+        if (stackOverflowPosts.isEmpty()) {
             this.resultsTable.getEmptyText().setText("No results found for your search criteria");
         }
         this.soTableModel.setItems(stackOverflowPosts);
         this.resultsTable.updateColumnSizes();
     }
 
-    private void clearResults()
-    {
+    private void clearResults() {
         this.soTableModel.setItems(new ArrayList<>());
 //        this.tagSearchField.setText("");
 //        this.titleSearchField.setText("");
     }
 
-    public class SearchAction extends DumbAwareAction
-    {
-        protected SearchAction()
-        {
+    public class SearchAction extends DumbAwareAction {
+        protected SearchAction() {
             super("Get EP App Domains", "Get Event Portal Application Domains", AllIcons.Actions.Refresh);
         }
 
