@@ -26,6 +26,6 @@ public interface MyIcons  {
     Icon schemaLarge = IconLoader.getIcon("/icons/triangle-large.svg", MyIcons.class);
     Icon schemaSmall = IconLoader.getIcon("/icons/triangle-small.svg", MyIcons.class);
     
-    Icon ToggleVisibility = IconLoader.getIcon("/icons/toggleVisibility.svg", MyIcons.class);
+    Icon ToggleVisibility = IconLoader.getIcon("/icons/toggleVisibility2.svg", MyIcons.class);
 
 }

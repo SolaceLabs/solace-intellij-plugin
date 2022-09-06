@@ -15,7 +15,7 @@ import com.intellij.ui.content.ContentFactory;
 import com.solace.aaron.ideaplugin1.nextgen.ApplicationsTabWindow;
 import com.solace.aaron.ideaplugin1.nextgen.EventApiProductsTabWindow;
 import com.solace.aaron.ideaplugin1.nextgen.EventApisTabWindow;
-import com.solace.aaron.ideaplugin1.nextgen.EventsTabWindow2;
+import com.solace.aaron.ideaplugin1.nextgen.EventsTabWindow;
 import com.solace.aaron.ideaplugin1.nextgen.SchemaTabWindow;
 
 import icons.MyIcons;
@@ -26,7 +26,9 @@ import icons.MyIcons;
  */
 public class SolaceEventPortalToolWindowFactory implements ToolWindowFactory {
 
-	private static final Logger logger = Logger.getInstance(SolaceEventPortalToolWindow.class);
+	// -Dide.ui.scale=1.5  // for larger fonts
+	
+	private static final Logger logger = Logger.getInstance(SolaceEventPortalToolWindowFactory.class);
 	private static Project project = null;
 	
 	public static Project getProject() {
@@ -52,7 +54,7 @@ public class SolaceEventPortalToolWindowFactory implements ToolWindowFactory {
         content.setIcon(MyIcons.appLarge);
         toolWindow.getContentManager().addContent(content);
         
-        EventsTabWindow2 eventsTabWindow2 = new EventsTabWindow2();
+        EventsTabWindow eventsTabWindow2 = new EventsTabWindow();
         loadButton.addListener(eventsTabWindow2);
         content = contentFactory.createContent(eventsTabWindow2.getContent(), "Events", false);
         content.setIcon(MyIcons.EventLarge);  // doesn't work!  :-(

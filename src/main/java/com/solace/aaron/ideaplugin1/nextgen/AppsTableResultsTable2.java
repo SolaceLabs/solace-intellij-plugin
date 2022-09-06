@@ -51,7 +51,7 @@ public class AppsTableResultsTable2 extends TableView<PortalRowObjectTreeNode> {
         if (row < 0 || row > getItems().size()) return null;
         PortalRowObjectTreeNode p = getRow(row);
         
-        return CustomRenderer.blend(getBackground(), EPObjectHelper.getColor(p.getType()), 0.2f);
+        return CustomRenderer2.blend(getBackground(), EPObjectHelper.getColor(p.getType()), 0.2f);
     }
     
     

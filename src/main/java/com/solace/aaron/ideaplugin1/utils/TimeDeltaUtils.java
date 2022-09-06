@@ -6,7 +6,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 
-import com.solace.aaron.ideaplugin1.nextgen.EPAppsTableModel;
 import com.solace.aaron.ideaplugin1.service.TokenHolder;
 
 public class TimeDeltaUtils {
@@ -148,7 +147,6 @@ public class TimeDeltaUtils {
 		System.out.println(englishDifferenceFrom("2022-08-29T12:12:12.000Z"));
 		
 		
-		System.out.println(Arrays.toString(EPAppsTableModel.COLS.values()));
 		
 	}
 	

@@ -27,7 +27,7 @@ import icons.MyIcons;
 /**
  * This window represents one of the tabs ("content") on the main PS+Portal tool.  It has a toolbar and a content area.
  */
-public class EventsTabWindow2 implements LoadRefreshButton.Observer, PortalToolbarListener {
+public class EventsTabWindow implements LoadRefreshButton.Observer, PortalToolbarListener {
 	
     private final JPanel contentToolWindow;  // the whole simple window
     private final PortalTabToolbar applicationsToolbarPanel;
@@ -37,9 +37,9 @@ public class EventsTabWindow2 implements LoadRefreshButton.Observer, PortalToolb
     private final AppsTableResultsTable2 tableView2;
     private final AppsTableResultsPanel2 tableResultsPanel;
     
-	private static final Logger LOG = Logger.getInstance(EventsTabWindow2.class);
+	private static final Logger LOG = Logger.getInstance(EventsTabWindow.class);
 
-	public EventsTabWindow2() {
+	public EventsTabWindow() {
     	// init the JPanel
     	SimpleToolWindowPanel sp = new SimpleToolWindowPanel(false, true);  // intellij component
 		tableModel2 = new EPAppsTableModel2(EPAppsTableModel2.generateColumnInfo()/* , new ArrayList<>() */);

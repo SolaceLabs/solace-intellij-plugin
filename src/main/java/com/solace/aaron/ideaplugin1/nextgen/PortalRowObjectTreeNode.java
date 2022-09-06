@@ -8,6 +8,7 @@ import javax.swing.Icon;
 import com.intellij.icons.AllIcons;
 
 import community.solace.ep.wrapper.EventPortalObjectType;
+import community.solace.ep.wrapper.EventPortalWrapper;
 
 public class PortalRowObjectTreeNode {
 
@@ -48,6 +49,7 @@ public class PortalRowObjectTreeNode {
     List<PortalRowObjectTreeNode> children = null;
     private int depth = 0;
     volatile boolean expanded = true;
+    volatile boolean hidden = false;
 
     public PortalRowObjectTreeNode(EventPortalObjectType type, String id) {
     	this.type = type;
@@ -130,10 +132,10 @@ public class PortalRowObjectTreeNode {
 		List<PortalRowObjectTreeNode> stack = new ArrayList<>();
 		stack.addAll(children);  // should be domains usually
 		while (!stack.isEmpty()) {
-			PortalRowObjectTreeNode row = stack.remove(0);
-			rows.add(row);
-			if (row.isExpanded() && row.hasChildren()) {
-				stack.addAll(0, row.children);
+			PortalRowObjectTreeNode node = stack.remove(0);
+			if (!hidden) rows.add(node);
+			if (node.isExpanded() && node.hasChildren()) {
+				stack.addAll(0, node.children);
 			}
 		}
 		return rows;
