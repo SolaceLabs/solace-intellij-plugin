@@ -6,7 +6,8 @@ import com.intellij.openapi.util.IconLoader;
 
 public interface MyIcons  {
 	
-    Icon portalIcon = IconLoader.getIcon("/icons/eventPortal.png", MyIcons.class);
+    Icon PortalToolbarIcon = IconLoader.getIcon("/icons/portalToolbar.svg", MyIcons.class);
+    Icon ToggleVisibility = IconLoader.getIcon("/icons/toggleVisibility2.svg", MyIcons.class);
 
     Icon DomainLarge = IconLoader.getIcon("/icons/domain-large.svg", MyIcons.class);
     Icon EventLarge = IconLoader.getIcon("/icons/circle-large.svg", MyIcons.class);
@@ -18,14 +19,14 @@ public interface MyIcons  {
     Icon apiProductSmall = IconLoader.getIcon("/icons/diamond-small.svg", MyIcons.class);
     Icon appLarge = IconLoader.getIcon("/icons/hex-large.svg", MyIcons.class);
     Icon appSmall = IconLoader.getIcon("/icons/hex-small.svg", MyIcons.class);
-    Icon appSmallPub = IconLoader.getIcon("/icons/hex-small-pub.svg", MyIcons.class);
-    Icon appSmallSub = IconLoader.getIcon("/icons/hex-small-sub.svg", MyIcons.class);
-    Icon appSmallBoth = IconLoader.getIcon("/icons/hex-small-both.svg", MyIcons.class);
+    Icon AppSmallPub = IconLoader.getIcon("/icons/hex-small-pub.svg", MyIcons.class);
+    Icon AppSmallSub = IconLoader.getIcon("/icons/hex-small-sub.svg", MyIcons.class);
+    Icon AppSmallBoth = IconLoader.getIcon("/icons/hex-small-both.svg", MyIcons.class);
     Icon apiLarge = IconLoader.getIcon("/icons/square-large.svg", MyIcons.class);
     Icon apiSmall = IconLoader.getIcon("/icons/square-small.svg", MyIcons.class);
     Icon schemaLarge = IconLoader.getIcon("/icons/triangle-large.svg", MyIcons.class);
     Icon schemaSmall = IconLoader.getIcon("/icons/triangle-small.svg", MyIcons.class);
     
-    Icon ToggleVisibility = IconLoader.getIcon("/icons/toggleVisibility2.svg", MyIcons.class);
+    Icon Portal = IconLoader.getIcon("/icons/portal.svg", MyIcons.class);
 
 }

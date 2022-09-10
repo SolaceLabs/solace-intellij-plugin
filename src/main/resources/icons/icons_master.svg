@@ -30,12 +30,12 @@
      inkscape:deskcolor="#d1d1d1"
      showgrid="true"
      inkscape:zoom="90.509668"
-     inkscape:cx="7.4301455"
-     inkscape:cy="9.0542814"
-     inkscape:window-width="3200"
-     inkscape:window-height="1733"
-     inkscape:window-x="-9"
-     inkscape:window-y="-9"
+     inkscape:cx="6.8169513"
+     inkscape:cy="9.0598056"
+     inkscape:window-width="3840"
+     inkscape:window-height="2080"
+     inkscape:window-x="-11"
+     inkscape:window-y="-11"
      inkscape:window-maximized="1"
      inkscape:current-layer="layer6">
     <inkscape:grid
@@ -130,7 +130,7 @@
   <g
      inkscape:groupmode="layer"
      id="layer3"
-     inkscape:label="Layer 3"
+     inkscape:label="Event APIs"
      style="display:none">
     <rect
        style="display:none;opacity:0.6;fill:#f4af3d;fill-opacity:1"
@@ -152,10 +152,10 @@
   <g
      inkscape:groupmode="layer"
      id="layer4"
-     inkscape:label="Layer 4"
+     inkscape:label="Event API Products"
      style="display:none">
     <rect
-       style="display:none;opacity:0.6;fill:#e5909f;fill-opacity:1;stroke-width:0.942809"
+       style="display:inline;opacity:0.6;fill:#e5909f;fill-opacity:1;stroke-width:0.942809"
        id="rect5508-2"
        width="11.313708"
        height="11.313708"
@@ -164,7 +164,7 @@
        transform="rotate(45)"
        inkscape:label="diamond" />
     <rect
-       style="display:inline;opacity:0.8;fill:#e5909f;fill-opacity:1;stroke-width:0.707107"
+       style="display:none;opacity:0.8;fill:#e5909f;fill-opacity:1;stroke-width:0.707107"
        id="rect5508-2-6"
        width="8.485281"
        height="8.485281"
@@ -176,7 +176,7 @@
   <g
      inkscape:groupmode="layer"
      id="layer5"
-     inkscape:label="Layer 5"
+     inkscape:label="Events"
      style="display:none">
     <circle
        style="display:none;opacity:0.6;fill:#00c895;fill-opacity:1;stroke-width:0.857142"
@@ -216,14 +216,10 @@
   <g
      inkscape:groupmode="layer"
      id="layer6"
-     inkscape:label="Layer 6"
+     inkscape:label="Domain"
      style="display:inline">
     <path
        id="rect13081"
-       style="display:none;opacity:0.8;fill:#9aa790;fill-opacity:1"
-       d="m 2,2 v 12 h 8 l 4,-4 V 6 L 10,2 Z" />
-    <path
-       id="rect13081-2"
        style="display:none;opacity:0.8;fill:#9aa790;fill-opacity:1"
        d="m 2,2 v 12 h 8 l 4,-4 V 6 L 10,2 Z" />
     <path
@@ -233,6 +229,10 @@
     <path
        id="rect13081-2-7-6"
        style="display:inline;opacity:0.8;fill:#9aa790;fill-opacity:1"
-       d="M 2 3 L 2 13 L 10 13 L 14 9 L 14 7 L 10 3 L 2 3 z " />
+       d="m 2,3 v 10 h 8 L 14,9 V 7 L 10,3 Z" />
   </g>
+  <g
+     inkscape:groupmode="layer"
+     id="layer7"
+     inkscape:label="Layer 7" />
 </svg>

@@ -1,11 +1,8 @@
 package community.solace.ep.idea.plugin.nextgen;
 
 import javax.swing.Icon;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
 
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.ui.SimpleToolWindowPanel;
 
 import community.solace.ep.client.model.ApplicationDomain;
 import community.solace.ep.client.model.EventApi;
@@ -14,8 +11,8 @@ import community.solace.ep.client.model.EventApiProductVersion;
 import community.solace.ep.client.model.EventApiVersion;
 import community.solace.ep.client.model.Plan;
 import community.solace.ep.client.model.SolaceMessagingService;
-import community.solace.ep.idea.plugin.LoadRefreshButton;
-import community.solace.ep.idea.plugin.utils.TimeDeltaUtils;
+import community.solace.ep.idea.plugin.SolaceEventPortalToolWindowFactory;
+import community.solace.ep.idea.plugin.utils.TimeUtils;
 import community.solace.ep.idea.plugin.utils.TopicUtils;
 import community.solace.ep.wrapper.EventPortalObjectType;
 import community.solace.ep.wrapper.EventPortalWrapper;
@@ -24,48 +21,72 @@ import icons.MyIcons;
 /**
  * This window represents one of the tabs ("content") on the main PS+Portal tool.  It has a toolbar and a content area.
  */
-public class EventApiProductsTabWindow implements LoadRefreshButton.Observer, PortalToolbarListener {
+public class TabEventApiProducts extends GenericTab {
 	
-    private final JPanel contentToolWindow;  // the whole simple window
-    private final PortalTabToolbar applicationsToolbarPanel;
-//    private final EPAppsTableModel tableModel;
-    private final EPAppsTableModel2 tableModel2;
-//    private final AppsTableResultsTable tableView;
-    private final AppsTableResultsTable2 tableView2;
-    private final AppsTableResultsPanel2 tableResultsPanel;
-    
-	private static final Logger LOG = Logger.getInstance(EventApiProductsTabWindow.class);
+	private static final Logger LOG = Logger.getInstance(TabEventApiProducts.class);
 
-	public EventApiProductsTabWindow() {
-    	// init the JPanel
-    	SimpleToolWindowPanel sp = new SimpleToolWindowPanel(false, true);  // intellij component
-		tableModel2 = new EPAppsTableModel2(EPAppsTableModel2.generateColumnInfo()/* , new ArrayList<>() */);
-        tableView2 = new AppsTableResultsTable2(tableModel2);
-        this.applicationsToolbarPanel = new PortalTabToolbar(this);
-
-        tableResultsPanel = new AppsTableResultsPanel2(tableView2);
-
-        sp.setToolbar(applicationsToolbarPanel);
-        sp.setContent(tableResultsPanel);
-        this.contentToolWindow = sp;
-    }
-    
-    public JComponent getContent() {
-        return contentToolWindow;
-    }
-
+	public TabEventApiProducts(SolaceEventPortalToolWindowFactory factory) {
+		super(factory);
+	}
 
 	@Override
-	public void refreshEventPortalData() {
-		if (this.applicationsToolbarPanel.currentSortStateObjects.get()) {
-			refreshObjectsNested();
+	public void refreshSortByDomain() {
+		PortalRowObjectTreeNode root = new PortalRowObjectTreeNode(null, "");  // root
+		try {
+			for (ApplicationDomain domain : EventPortalWrapper.INSTANCE.getDomains()) {
+				PortalRowObjectTreeNode row = new PortalRowObjectTreeNode(EventPortalObjectType.DOMAIN, domain.getId());
+				row.setIcon(MyIcons.DomainLarge);
+				root.addChild(row);
+				row.setName(domain.getName());
+				row.addNote(String.format("%d %s",
+						domain.getStats().getEventApiCount(),
+						TopicUtils.pluralize("Event API",  domain.getStats().getEventApiCount())
+						));
+				row.setLink(String.format(TopicUtils.DOMAIN_URL, domain.getId()));
+				row.setLastUpdatedTs(TimeUtils.parseTime(domain.getUpdatedTime()));
+				row.setLastUpdatedByUser(domain.getChangedBy());
+				row.setCreatedByUser(domain.getCreatedBy());
+
+				for (EventApiProduct apiProduct : EventPortalWrapper.INSTANCE.getEventApiProductsForDomainId(domain.getId())) {
+					generateTree(row, apiProduct, domain, false);
+				}
+			}
+		} catch (RuntimeException e) {
+//			GenericAppsTableDomain lastApp = apps.get(apps.size()-1);
+//			LOG.error(lastApp.getType() + " " + lastApp.getName());
+			LOG.error(e);
+			throw e;
+		}
+		if (!root.hasChildren()) {
+			this.tableView.getEmptyText().setText("No results found for your search criteria");
 		} else {
-			refreshAlphaNested();
+			this.tableModel.setRoot(root);
+			this.tableModel.flatten();
+		}
+	}
+
+	@Override
+	public void refreshSortByAlpha() {
+		PortalRowObjectTreeNode root = new PortalRowObjectTreeNode(null, "");  // root
+		try {
+			for (EventApiProduct product : EventPortalWrapper.INSTANCE.getEventApiProducts()) {
+				generateTree(root, product, EventPortalWrapper.INSTANCE.getDomain(product.getApplicationDomainId()), true);
+			}
+		} catch (RuntimeException e) {
+			LOG.error(e);
+			throw e;
+		}
+		if (!root.hasChildren()) {
+			this.tableView.getEmptyText().setText("No results found for your search criteria");
+		} else {
+			this.tableModel.setRoot(root);
+			this.tableModel.flatten();
 		}
 	}
 	
+
 	
-	private PortalRowObjectTreeNode buildEventApiVerTree(Icon icon, EventApiVersion apiVer, ApplicationDomain domain) {
+	private PortalRowObjectTreeNode buildEventApiVerNode(Icon icon, EventApiVersion apiVer, ApplicationDomain domain) {
 		
 		EventApi api = EventPortalWrapper.INSTANCE.getEventApi(apiVer.getEventApiId());
 		ApplicationDomain origDomain = EventPortalWrapper.INSTANCE.getDomain(api.getApplicationDomainId());
@@ -115,7 +136,7 @@ public class EventApiProductsTabWindow implements LoadRefreshButton.Observer, Po
 				TopicUtils.pluralize("Version",  product.getNumberOfVersions())));
 		if (domainInNotes) proProduct.addNote("Domain: " + domain.getName());
 		proProduct.setLink(String.format(TopicUtils.EVENT_API_PRODUCT_URL, domain.getId(), product.getId()));
-		proProduct.setLastUpdated(TimeDeltaUtils.formatTime(product.getUpdatedTime()));
+		proProduct.setLastUpdatedTs(TimeUtils.parseTime(product.getUpdatedTime()));
 		proProduct.setLastUpdatedByUser(product.getChangedBy());
 		proProduct.setCreatedByUser(product.getCreatedBy());
 		
@@ -137,7 +158,7 @@ public class EventApiProductsTabWindow implements LoadRefreshButton.Observer, Po
 			}
 			proProductVer.setState(EventPortalWrapper.INSTANCE.getState(productVersion.getStateId()).getName());
 			proProductVer.setLink(String.format(TopicUtils.EVENT_API_PRODUCT_VER_URL, domain.getId(), product.getId(), productVersion.getId()));
-			proProductVer.setLastUpdated(TimeDeltaUtils.formatTime(productVersion.getUpdatedTime()));
+			proProductVer.setLastUpdatedTs(TimeUtils.parseTime(productVersion.getUpdatedTime()));
 			proProductVer.setLastUpdatedByUser(productVersion.getChangedBy());
 			proProductVer.setCreatedByUser(productVersion.getCreatedBy());
 			
@@ -152,95 +173,10 @@ public class EventApiProductsTabWindow implements LoadRefreshButton.Observer, Po
 			
 			for (String apiVerId : productVersion.getEventApiVersionIds()) {  // for all EventVersions this AppVer produces...
 				EventApiVersion apiVer = EventPortalWrapper.INSTANCE.getEventApiVersion(apiVerId);
-				proProductVer.addChild(buildEventApiVerTree(MyIcons.apiSmall, apiVer, domain));
+				proProductVer.addChild(buildEventApiVerNode(MyIcons.apiSmall, apiVer, domain));
 			}
 		}
 	}
-
-	public void refreshObjectsNested() {
-		PortalRowObjectTreeNode root = new PortalRowObjectTreeNode(null, "");  // root
-		try {
-			for (ApplicationDomain domain : EventPortalWrapper.INSTANCE.getDomains()) {
-				PortalRowObjectTreeNode row = new PortalRowObjectTreeNode(EventPortalObjectType.DOMAIN, domain.getId());
-				row.setIcon(MyIcons.DomainLarge);
-				root.addChild(row);
-				row.setName(domain.getName());
-				row.addNote(String.format("%d %s",
-						domain.getStats().getEventApiCount(),
-						TopicUtils.pluralize("Event API",  domain.getStats().getEventApiCount())
-						));
-				row.setLink(String.format(TopicUtils.DOMAIN_URL, domain.getId()));
-				row.setLastUpdated(TimeDeltaUtils.formatTime(domain.getUpdatedTime()));
-				row.setLastUpdatedByUser(domain.getChangedBy());
-				row.setCreatedByUser(domain.getCreatedBy());
-
-				for (EventApiProduct apiProduct : EventPortalWrapper.INSTANCE.getEventApiProductsForDomainId(domain.getId())) {
-					generateTree(row, apiProduct, domain, false);
-				}
-			}
-		} catch (RuntimeException e) {
-//			GenericAppsTableDomain lastApp = apps.get(apps.size()-1);
-//			LOG.error(lastApp.getType() + " " + lastApp.getName());
-			LOG.error(e);
-			throw e;
-		}
-		if (!root.hasChildren()) {
-			this.tableView2.getEmptyText().setText("No results found for your search criteria");
-		} else {
-			this.tableModel2.setRoot(root);
-			this.tableModel2.flatten();
-		}
-	}
-
-	public void refreshAlphaNested() {
-		PortalRowObjectTreeNode root = new PortalRowObjectTreeNode(null, "");  // root
-		try {
-			for (EventApiProduct product : EventPortalWrapper.INSTANCE.getEventApiProducts()) {
-				generateTree(root, product, EventPortalWrapper.INSTANCE.getDomain(product.getApplicationDomainId()), true);
-			}
-		} catch (RuntimeException e) {
-			LOG.error(e);
-			throw e;
-		}
-		if (!root.hasChildren()) {
-			this.tableView2.getEmptyText().setText("No results found for your search criteria");
-		} else {
-			this.tableModel2.setRoot(root);
-			this.tableModel2.flatten();
-		}
-	}
-	
-	@Override
-	public void sortObjects() {
-		refreshObjectsNested();
-	}
-	
-	
-	@Override
-	public void sortAlpha() {
-		refreshAlphaNested();
-	}
-	
-	
-	@Override
-	public void expandAll() {
-		tableModel2.getRoot().expandNext();
-		tableModel2.flatten();
-	}
-	
-	
-	@Override
-	public void collapseAll() {
-		tableModel2.getRoot().collapse();
-		tableModel2.flatten();
-	}
-
-	@Override
-	public void hideEmptyDomains() {
-		// TODO Auto-generated method stub
-		
-	}
-
 }
 
 // -Dide.ui.scale=1.5

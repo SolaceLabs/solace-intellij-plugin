@@ -2,9 +2,9 @@ package community.solace.ep.idea.plugin.nextgen;
 
 public interface PortalToolbarListener {
 
-	public void sortObjects();
-	public void sortAlpha();
+	public void sortDomainClicked();
+	public void sortAlphaClicked();
 	public void hideEmptyDomains();
-	public void expandAll();
-	public void collapseAll();
+	public void expandNextClicked();
+	public void collapseAllClicked();
 }

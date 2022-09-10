@@ -40,23 +40,6 @@ public class PortalTabToolbar extends NonOpaquePanel {
 		this.setLayout(new FlowLayout(FlowLayout.LEFT));
 		this.setBorder(BorderFactory.createEmptyBorder());
 
-		/*
-        this.tagSearchField = new SearchTextField();
-        String tagText = "Search by Tags";
-        StatusText tagSearchEmptyText = this.tagSearchField.getTextEditor().getEmptyText();
-        tagSearchEmptyText.appendText(tagText, new SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, ListPluginComponent.GRAY_COLOR));
-        this.tagSearchField.addKeyboardListener(this.keyAdapterSearchStackOverflow());
-
-        this.titleSearchField = new SearchTextField();
-        String titleText = "Search by Title";
-        StatusText titleSearchEmptyText = this.titleSearchField.getTextEditor().getEmptyText();
-        titleSearchEmptyText.appendText(titleText, new SimpleTextAttributes(SimpleTextAttributes.STYLE_PLAIN, ListPluginComponent.GRAY_COLOR));
-        this.titleSearchField.addKeyboardListener(this.keyAdapterSearchStackOverflow());
-
-        this.add(this.tagSearchField);
-        this.add(this.titleSearchField);
-		 */
-
 		toolbar = this.createToolbar();
 		toolbar.setTargetComponent(this);
 		this.add(toolbar.getComponent());
@@ -76,7 +59,7 @@ public class PortalTabToolbar extends NonOpaquePanel {
 		actionGroup.add(new ActionFilter());
 //        actionGroup.add(new SettingsAction());
 
-		return ActionManager.getInstance().createActionToolbar("ep-apps-toolbar", actionGroup, false);
+		return ActionManager.getInstance().createActionToolbar("ep-toolbar", actionGroup, false);
 	}
 
 
@@ -100,7 +83,7 @@ public class PortalTabToolbar extends NonOpaquePanel {
 		public void setSelected(@NotNull AnActionEvent e, boolean state) {
 			boolean existing = currentSortStateObjects.compareAndSet(false, true);
 //			currentSortStateObjects.set(true);
-			if (existing) listener.sortObjects();  // only sort if we change
+			if (existing) listener.sortDomainClicked();  // only sort if we change
 		}
     }
 
@@ -109,11 +92,12 @@ public class PortalTabToolbar extends NonOpaquePanel {
     private class HideEmptyDomains extends ToggleAction {
     	
         protected HideEmptyDomains() {
-            super("Hide Empty Domains", "Simply hides any Domains that are empty", MyIcons.ToggleVisibility);
+            super("Show Empty Domains", "Shows all domains, not just ones that are populated", MyIcons.ToggleVisibility);
         }
 
 		@Override
 		public boolean isSelected(@NotNull AnActionEvent e) {
+			e.getPresentation().setEnabled(false);
 			return hideEmptyDomains;
 		}
 
@@ -138,7 +122,7 @@ public class PortalTabToolbar extends NonOpaquePanel {
 		@Override
 		public void setSelected(@NotNull AnActionEvent e, boolean state) {
 			boolean existing = currentSortStateObjects.compareAndSet(true, false);
-			if (existing) listener.sortAlpha();
+			if (existing) listener.sortAlphaClicked();
 		}
     }
 
@@ -150,7 +134,7 @@ public class PortalTabToolbar extends NonOpaquePanel {
 
 		@Override
 		public void actionPerformed(@NotNull AnActionEvent e) {
-			listener.expandAll();
+			listener.expandNextClicked();
 		}
 	}
 
@@ -162,7 +146,7 @@ public class PortalTabToolbar extends NonOpaquePanel {
 
 		@Override
 		public void actionPerformed(@NotNull AnActionEvent e) {
-			listener.collapseAll();
+			listener.collapseAllClicked();
 		}
 	}
 

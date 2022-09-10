@@ -1,12 +1,17 @@
 package community.solace.ep.idea.plugin.utils;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.Arrays;
+import java.time.format.FormatStyle;
+import java.util.Date;
+import java.util.Locale;
 
-public class TimeDeltaUtils {
+public class TimeUtils {
 
 	
 	private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX").withZone(ZoneId.of("UTC"));
@@ -22,32 +27,53 @@ public class TimeDeltaUtils {
 		}
 	}
 	
-	public static String formatTime(String time) {
-		if (TokenHolder.props.getProperty("timeFormat").equalsIgnoreCase("timestamp")) {
-			StringBuilder sb = new StringBuilder();
-			sb.append(time.substring(0,10)).append(" ").append(time.substring(11, 19));
-			return sb.toString();
-		} else {
-			return englishDifferenceFrom(time);
+	public enum Format {
+		RELATIVE,
+		TIMESTAMP,
+		CASUAL,
+		;
+	}
+	
+	public static Format format = Format.CASUAL;
+
+	private static final DateTimeFormatter CASUAL_FORMAT = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).withLocale(Locale.getDefault());
+	private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss XX").withZone(ZoneId.systemDefault());
+//	private static final DateFormat TIMESTAMP = new SimpleDateFormat("yyyy-MM-dd  HH:mm:ss XX");//.withZone(ZoneId.systemDefault());
+
+	
+	
+	public static String formatTime(long ts) {
+//		Date d = new Date(ts);
+		ZonedDateTime dateTime = Instant.ofEpochMilli(ts).atZone(ZoneId.systemDefault());
+		if (format == Format.TIMESTAMP) {
+//			return TIMESTAMP.format(d);
+			return dateTime.format(TIMESTAMP_FORMAT);
+		} else if (format == Format.CASUAL) {
+		    return dateTime.format(CASUAL_FORMAT);
+
+		} else if (format == Format.RELATIVE) {
+			return englishDifferenceFrom(ts);
 		}
+		
+		
+//		if (TokenHolder.props.getProperty("timeFormat").equalsIgnoreCase("timestamp")) {
+//			StringBuilder sb = new StringBuilder();
+//			sb.append(time.substring(0,10)).append(" ").append(time.substring(11, 19));
+//			return sb.toString();
+//		} else {
+//			return englishDifferenceFrom(time);
+//		}
+		
+		return "";
 	}
 
 	
 	
-	public static String englishDifferenceFrom(String time) {
-		long timestampMs = parseTime(time);
-		if (timestampMs == Long.MAX_VALUE) {  // error handling
-			return time;  // as is
-		}
+	private static String englishDifferenceFrom(long timestampMs) {
 		return englishDelta(System.currentTimeMillis() - timestampMs);
 	}
 	
-	public static String englishDifferenceFrom(long timestampMs) {
-		long now = System.currentTimeMillis();
-		return englishDelta(now - timestampMs);
-	}
-
-	public static String englishDelta(long deltaMs) {
+	private static String englishDelta(long deltaMs) {
 		long deltaSeconds = deltaMs / 1000;
 		StringBuilder sb = new StringBuilder();
 		boolean negative = deltaMs < 0;
@@ -138,11 +164,11 @@ public class TimeDeltaUtils {
 		System.out.println();
 
 		
-		System.out.println(englishDifferenceFrom("2022-08-21T12:12:12.000Z"));
+		System.out.println(parseTime("2022-08-21T12:12:12.000Z"));
 		System.out.println(parseTime("2022-08-21T12:12:12.000Z"));
 		System.out.println(System.currentTimeMillis());
-		System.out.println(englishDifferenceFrom("2022-08-26T12:12:12.000Z"));
-		System.out.println(englishDifferenceFrom("2022-08-29T12:12:12.000Z"));
+		System.out.println(parseTime("2022-08-26T12:12:12.000Z"));
+		System.out.println(parseTime("2022-08-29T12:12:12.000Z"));
 		
 		
 		

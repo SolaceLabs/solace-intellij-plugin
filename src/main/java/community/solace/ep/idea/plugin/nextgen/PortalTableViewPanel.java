@@ -9,12 +9,12 @@ import com.intellij.ui.ScrollPaneFactory;
 import com.intellij.ui.components.panels.NonOpaquePanel;
 import com.intellij.ui.table.TableView;
 
-public class AppsTableResultsPanel2 extends NonOpaquePanel
+public class PortalTableViewPanel extends NonOpaquePanel
 {
 	private static final long serialVersionUID = 1L;
 	private TableView<PortalRowObjectTreeNode> resultsTable;
 
-    public AppsTableResultsPanel2(TableView<PortalRowObjectTreeNode> resultsTable) {
+    public PortalTableViewPanel(TableView<PortalRowObjectTreeNode> resultsTable) {
         this.resultsTable = resultsTable;
         this.init();
     }

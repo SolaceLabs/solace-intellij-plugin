@@ -35,20 +35,36 @@ public class EPObjectHelper {
 	}
 	
 	public static String getName(EventPortalObjectType type) {
+//		switch (type) {
+//		case DOMAIN: return "Domain";
+//		case APPLICATION: return "Application";
+//		case APPLICATION_VERSION: return "App Version";
+//		case EVENT: return "Event";
+//		case EVENT_VERSION: return "Event Ver";
+//		case SCHEMA: return "Schema";
+//		case SCHEMA_VERSION: return "Schema Ver";
+//		case ENUM: return "Enum";
+//		case ENUM_VERSION: return "Enum Ver";
+//		case EVENT_API: return "Event API";
+//		case EVENT_API_VERSION: return "Event API Ver";
+//		case EVENT_API_PRODUCT: return "Event API Product";
+//		case EVENT_API_PRODUCT_VERSION: return "Event API Product Ver";
+//		default: return "--DEFAULT--";
+//		}
 		switch (type) {
 		case DOMAIN: return "Domain";
-		case APPLICATION: return "Application";
-		case APPLICATION_VERSION: return "App Version";
+		case APPLICATION: return "App";
+		case APPLICATION_VERSION: return "vApp";
 		case EVENT: return "Event";
-		case EVENT_VERSION: return "Event Ver";
+		case EVENT_VERSION: return "vEvent";
 		case SCHEMA: return "Schema";
-		case SCHEMA_VERSION: return "Schema Ver";
+		case SCHEMA_VERSION: return "vSchema";
 		case ENUM: return "Enum";
-		case ENUM_VERSION: return "Enum Ver";
+		case ENUM_VERSION: return "vEnum";
 		case EVENT_API: return "Event API";
-		case EVENT_API_VERSION: return "Event API Ver";
+		case EVENT_API_VERSION: return "vAPI";
 		case EVENT_API_PRODUCT: return "Event API Product";
-		case EVENT_API_PRODUCT_VERSION: return "Event API Product Ver";
+		case EVENT_API_PRODUCT_VERSION: return "vProduct";
 		default: return "--DEFAULT--";
 		}
 	}

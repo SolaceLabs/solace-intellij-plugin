@@ -9,6 +9,7 @@ import java.awt.event.MouseMotionListener;
 
 import javax.swing.ListSelectionModel;
 
+import org.jdesktop.swingx.calendar.DateSelectionModel.SelectionMode;
 import org.jdesktop.swingx.plaf.basic.core.BasicTransferable;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,27 +32,32 @@ import community.solace.ep.client.model.SchemaVersion;
 import community.solace.ep.idea.plugin.utils.EPObjectHelper;
 import community.solace.ep.wrapper.EventPortalObjectType;
 import community.solace.ep.wrapper.EventPortalWrapper;
-import icons.MyIcons;
 
 
-public class AppsTableResultsTable2 extends TableView<PortalRowObjectTreeNode> {
+public class PortalTableView extends TableView<PortalRowObjectTreeNode> {
 	
 	private static final long serialVersionUID = 1L;
-	final EPAppsTableModel2 model;
+	final PortalTableModel model;
 
-	public AppsTableResultsTable2(EPAppsTableModel2 model) {
+	public PortalTableView(PortalTableModel model) {
         super(model);
         this.model = model;
         this.init();
+//        this.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+//        this.setCellSelectionEnabled(true);
     }
-	
+
+	/** I found this by digging through a bunch of source code to figure out where this default row highlighter was coming from */
     @Override
     protected @Nullable Color getHoveredRowBackground() {
         int row = TableHoverListener.getHoveredRow(this);
         if (row < 0 || row > getItems().size()) return null;
         PortalRowObjectTreeNode p = getRow(row);
-        
-        return CustomRenderer2.blend(getBackground(), EPObjectHelper.getColor(p.getType()), 0.2f);
+//        if (this.getCursor().getType() == Cursor.DEFAULT_CURSOR) {
+//        	return CustomTableCellRenderer.blend(getBackground(), EPObjectHelper.getColor(p.getType()), 0.15f);
+//        } else {
+        	return CustomTableCellRenderer.blend(getBackground(), EPObjectHelper.getColor(p.getType()), 0.2f);
+//        }
     }
     
     
@@ -59,11 +65,13 @@ public class AppsTableResultsTable2 extends TableView<PortalRowObjectTreeNode> {
     	if (col == 1) {  // the name is always clickable
     		return true;
     	} else if (col == 6) {  // pull down schemas if you want?
-            if (pro.getType() == EventPortalObjectType.APPLICATION_VERSION || pro.getType() == EventPortalObjectType.EVENT_VERSION) {
+            if (pro.getType() == EventPortalObjectType.APPLICATION_VERSION
+            		|| pro.getType() == EventPortalObjectType.EVENT_VERSION
+            		|| pro.getType() == EventPortalObjectType.SCHEMA_VERSION) {
                 return true;
             }
     	} else if (col == 0) {
-            if (pro.hasChildren()) {
+            if (pro.hasChildren() && !pro.isHidden()) {
                 return true;
             }
     	}
@@ -81,15 +89,11 @@ public class AppsTableResultsTable2 extends TableView<PortalRowObjectTreeNode> {
         this.getTableHeader().setReorderingAllowed(false);
 //        this.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
-
-
         this.getEmptyText().setText("Load Event Portal data!");
         
         this.addMouseMotionListener(new MouseMotionListener() {
             @Override
-            public void mouseDragged(MouseEvent e) {
-
-            }
+            public void mouseDragged(MouseEvent e) { }
 
             @Override
             public void mouseMoved(MouseEvent e) {
@@ -99,20 +103,15 @@ public class AppsTableResultsTable2 extends TableView<PortalRowObjectTreeNode> {
                 	PortalRowObjectTreeNode pro = (PortalRowObjectTreeNode)getValueAt(row,col);
                 	if (isClickable(pro, col)) {
                         setCursor(new Cursor(Cursor.HAND_CURSOR));
-                	} else {
-                        setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                        return;
                 	}
-                } else {
-                    setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
                 }
+                setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
             }
         });
         
-        
-        
         this.addMouseListener(new MouseListener() {
         	
-        	int lastRowClicked = 0;
         	PortalRowObjectTreeNode lastProClicked = null;
         	
             @Override
@@ -121,9 +120,6 @@ public class AppsTableResultsTable2 extends TableView<PortalRowObjectTreeNode> {
                 int row = rowAtPoint(e.getPoint());
                 int col = columnAtPoint(e.getPoint());
                 
-                // Link column = 2
-
-
                 if ((row >= 0 && row < getItems().size()) && MouseEvent.BUTTON1 == e.getButton()) {
                 	PortalRowObjectTreeNode pro = (PortalRowObjectTreeNode)getValueAt(row,col);
                 	if (!isClickable(pro, col)) return;
@@ -183,7 +179,7 @@ public class AppsTableResultsTable2 extends TableView<PortalRowObjectTreeNode> {
                     			pro.expandOnce();
                     		}
                     	}
-                    	model.setItems(pro.getRoot().flatten());
+                    	model.setItems(pro.getRoot().flatten(true));
                     }
                 }
             }
