@@ -8,6 +8,9 @@ public final class Notify {
 
 	public static void msg(String s) {
 		Notifications.Bus.notify(new Notification("ep20", "Solace Event Portal", s, NotificationType.INFORMATION));
-
+	}
+	
+	public static void warn(String s) {
+		Notifications.Bus.notify(new Notification("ep20", "Solace Event Portal", s, NotificationType.ERROR));
 	}
 }

@@ -10,10 +10,19 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- ones that came with template -->
-        <!--applicationService serviceImplementation="com.github.aaron613.ideaplugin1.services.MyApplicationService"/>
-        <projectService serviceImplementation="com.github.aaron613.ideaplugin1.services.MyProjectService"/-->
+        <!--
+		<applicationService serviceImplementation="com.github.aaron613.ideaplugin1.services.MyApplicationService"/>
+        <projectService serviceImplementation="com.github.aaron613.ideaplugin1.services.MyProjectService"/>
+		-->
         <!-- mine based off StackOverflow project -->
         <toolWindow factoryClass="community.solace.ep.idea.plugin.SolaceEventPortalToolWindowFactory" id="Solace Event Portal" anchor="bottom" icon="MyIcons.PortalToolbarIcon" canCloseContents="true"/>
+
+
+	    <applicationConfigurable parentId="tools" instance="community.solace.ep.idea.plugin.settings.AppSettingsConfigurable"
+	                             id="community.solace.ep.idea.plugin.settings.AppSettingsConfigurable"
+	                             displayName="Solace Event Portal"/>
+	    <applicationService serviceImplementation="community.solace.ep.idea.plugin.settings.AppSettingsState"/>
+
     </extensions>
 
     <!--applicationListeners>

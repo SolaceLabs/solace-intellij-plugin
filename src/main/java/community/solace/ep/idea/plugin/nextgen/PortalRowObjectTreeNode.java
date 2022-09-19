@@ -22,13 +22,14 @@ public class PortalRowObjectTreeNode {
 	 */
 
 	final EventPortalObjectType type;
+	final Object eventPortalObject;
 	final String id;
 	String name = "";
 
 	String link = "";
 	String state = "";
-	List<String> notes = new ArrayList<>();
-	String details = "";
+	List<String> details = new ArrayList<>();
+	String topic = "";
 //	String lastUpdated = "";
 	long lastUpdatedTs = 0L;
 	String lastUpdatedByUserId = "";
@@ -40,10 +41,18 @@ public class PortalRowObjectTreeNode {
 	volatile boolean expanded = true;
 	volatile boolean hidden = false;
 
-	public PortalRowObjectTreeNode(EventPortalObjectType type, String id) {
+	public PortalRowObjectTreeNode(EventPortalObjectType type, Object eventPortalObject, String id) {
 		this.type = type;
+		this.eventPortalObject = eventPortalObject;
 		this.id = id;
 	}
+
+//	public PortalRowObjectTreeNode(EventPortalObjectType type, String id) {
+//		this.type = type;
+//		this.eventPortalObject = null;
+//		this.id = id;
+//	}
+
 
 	public String getId() {
 		return id;
@@ -81,20 +90,20 @@ public class PortalRowObjectTreeNode {
 		this.state = state;
 	}
 
-	public List<String> getNotes() {
-		return notes;
-	}
-
-	public void addNote(String note) {
-		this.notes.add(note);
-	}
-
-	public String getDetails() {
+	public List<String> getDetails() {
 		return details;
 	}
 
-	public void setDetails(String details) {
-		this.details = details;
+	public void addDetail(String detail) {
+		this.details.add(detail);
+	}
+
+	public String getTopic() {
+		return topic;
+	}
+
+	public void setTopic(String topic) {
+		this.topic = topic;
 	}
 
 //	public String getLastUpdated() {
@@ -163,13 +172,16 @@ public class PortalRowObjectTreeNode {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < (10 * depth); i++) {
-			sb.append(" ");
-		}
-		sb.append(String.format("'%s' %s", name, type.toString()));
-
-		return sb.toString();
+//		StringBuilder sb = new StringBuilder();
+//		for (int i = 0; i < (10 * depth); i++) {
+//			sb.append(" ");
+//		}
+//		sb.append(String.format("'%s' %s", name, type.toString()));
+//
+//		return sb.toString();
+		
+		if (eventPortalObject != null) return eventPortalObject.toString();
+		return String.format("'%s' %s", name, type.toString());
 	}
 
 	public boolean hasChildren() {
@@ -182,7 +194,15 @@ public class PortalRowObjectTreeNode {
 		this.children.add(child);
 		child.parent = this;
 		child.depth = depth + 1;
-		child.expanded = false; // collapsed
+		child.expanded = false;  // collapsed
+		child.bubbleDepth();
+	}
+	
+	private void bubbleDepth() {
+		if (!hasChildren()) return;
+		for (PortalRowObjectTreeNode child : children) {
+			child.depth = depth + 1;
+		}
 	}
 
 	public boolean isExpanded() {
@@ -198,11 +218,13 @@ public class PortalRowObjectTreeNode {
 		}
 		expanded = false;
 	}
-
+	
+	/** Just expand this, shows the children, but nothing recursive */
 	public void expandOnce() {
 		expanded = true; // not children
 	}
 
+	/** Expand everything under this node */
 	public void expandAll() {
 		if (hasChildren()) {
 			for (PortalRowObjectTreeNode child : children) {
@@ -213,6 +235,7 @@ public class PortalRowObjectTreeNode {
 		expanded = true;
 	}
 
+	/** Expand any non-expanded nodes under this node one more level down */
 	public void expandNext() {
 		if (hasChildren()) {
 			for (PortalRowObjectTreeNode child : children) {

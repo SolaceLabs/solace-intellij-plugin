@@ -51,12 +51,12 @@ public class PortalTableModel extends ListTableModel<PortalRowObjectTreeNode> {
 	static final String[] COLUMNS = {
 			"Type",
 			"Name",
-			"Notes",
+			"Details",
 			"State",
 			"Topic",
 			"Last Updated",
 			"Action",
-			"ID",
+//			"ID",
 	};
 
 	public static class PortalColumnInfo extends ColumnInfo<PortalRowObjectTreeNode, PortalRowObjectTreeNode> {

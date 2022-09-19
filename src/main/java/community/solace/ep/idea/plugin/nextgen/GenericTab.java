@@ -13,7 +13,7 @@ import community.solace.ep.idea.plugin.SolaceEventPortalToolWindowFactory;
  */
 abstract class GenericTab implements LoadRefreshButton.Observer, PortalToolbarListener {
 	
-	protected final SolaceEventPortalToolWindowFactory factory;
+	private final SolaceEventPortalToolWindowFactory factory;
     protected final SimpleToolWindowPanel contentToolWindow;  // the panel for the whole tab (this)
     protected final PortalTabToolbar toolbar;
     protected final PortalTableModel tableModel;
@@ -27,7 +27,7 @@ abstract class GenericTab implements LoadRefreshButton.Observer, PortalToolbarLi
     	SimpleToolWindowPanel sp = new SimpleToolWindowPanel(false, true);
         toolbar = new PortalTabToolbar(this);
 		tableModel = new PortalTableModel(PortalTableModel.generateColumnInfo());
-        tableView = new PortalTableView(tableModel);
+        tableView = new PortalTableView(this, tableModel);
         tablePanel = new PortalTableViewPanel(tableView);
         sp.setToolbar(toolbar);
         sp.setContent(tablePanel);
@@ -37,6 +37,12 @@ abstract class GenericTab implements LoadRefreshButton.Observer, PortalToolbarLi
     public JComponent getContent() {
         return contentToolWindow;
     }
+    
+    public SolaceEventPortalToolWindowFactory getFactory() {
+    	return factory;
+    }
+    
+    
 
     protected abstract void refreshSortByDomain();
     protected abstract void refreshSortByAlpha();

@@ -12,8 +12,10 @@ import community.solace.ep.client.model.EventApiVersion;
 import community.solace.ep.client.model.Plan;
 import community.solace.ep.client.model.SolaceMessagingService;
 import community.solace.ep.idea.plugin.SolaceEventPortalToolWindowFactory;
+import community.solace.ep.idea.plugin.settings.AppSettingsState;
 import community.solace.ep.idea.plugin.utils.TimeUtils;
 import community.solace.ep.idea.plugin.utils.TopicUtils;
+import community.solace.ep.idea.plugin.utils.WordyUtils;
 import community.solace.ep.wrapper.EventPortalObjectType;
 import community.solace.ep.wrapper.EventPortalWrapper;
 import icons.MyIcons;
@@ -31,18 +33,18 @@ public class TabEventApiProducts extends GenericTab {
 
 	@Override
 	public void refreshSortByDomain() {
-		PortalRowObjectTreeNode root = new PortalRowObjectTreeNode(null, "");  // root
+		PortalRowObjectTreeNode root = new PortalRowObjectTreeNode(null, null, "");  // root
 		try {
 			for (ApplicationDomain domain : EventPortalWrapper.INSTANCE.getDomains()) {
-				PortalRowObjectTreeNode row = new PortalRowObjectTreeNode(EventPortalObjectType.DOMAIN, domain.getId());
+				PortalRowObjectTreeNode row = new PortalRowObjectTreeNode(EventPortalObjectType.DOMAIN, domain, domain.getId());
 				row.setIcon(MyIcons.DomainLarge);
 				root.addChild(row);
 				row.setName(domain.getName());
-				row.addNote(String.format("%d %s",
+				row.addDetail(String.format("%d %s",
 						domain.getStats().getEventApiCount(),
-						TopicUtils.pluralize("Event API",  domain.getStats().getEventApiCount())
+						WordyUtils.pluralize("Event API",  domain.getStats().getEventApiCount())
 						));
-				row.setLink(String.format(TopicUtils.DOMAIN_URL, domain.getId()));
+				row.setLink(String.format(TopicUtils.DOMAIN_URL, AppSettingsState.getInstance().baseUrl, domain.getId()));
 				row.setLastUpdatedTs(TimeUtils.parseTime(domain.getUpdatedTime()));
 				row.setLastUpdatedByUser(domain.getChangedBy());
 				row.setCreatedByUser(domain.getCreatedBy());
@@ -51,6 +53,7 @@ public class TabEventApiProducts extends GenericTab {
 					generateTree(row, apiProduct, domain, false);
 				}
 			}
+			root.expandNext();  // show the level under domains
 		} catch (RuntimeException e) {
 //			GenericAppsTableDomain lastApp = apps.get(apps.size()-1);
 //			LOG.error(lastApp.getType() + " " + lastApp.getName());
@@ -67,7 +70,7 @@ public class TabEventApiProducts extends GenericTab {
 
 	@Override
 	public void refreshSortByAlpha() {
-		PortalRowObjectTreeNode root = new PortalRowObjectTreeNode(null, "");  // root
+		PortalRowObjectTreeNode root = new PortalRowObjectTreeNode(null, null, "");  // root
 		try {
 			for (EventApiProduct product : EventPortalWrapper.INSTANCE.getEventApiProducts()) {
 				generateTree(root, product, EventPortalWrapper.INSTANCE.getDomain(product.getApplicationDomainId()), true);
@@ -90,7 +93,7 @@ public class TabEventApiProducts extends GenericTab {
 		
 		EventApi api = EventPortalWrapper.INSTANCE.getEventApi(apiVer.getEventApiId());
 		ApplicationDomain origDomain = EventPortalWrapper.INSTANCE.getDomain(api.getApplicationDomainId());
-		PortalRowObjectTreeNode proApiVer = new PortalRowObjectTreeNode(EventPortalObjectType.EVENT_API_VERSION, apiVer.getId());
+		PortalRowObjectTreeNode proApiVer = new PortalRowObjectTreeNode(EventPortalObjectType.EVENT_API_VERSION, apiVer, apiVer.getId());
 		// is there a schema for this Event?
 		proApiVer.setIcon(icon);
 		proApiVer.setName(String.format("%s%s%s v%s",
@@ -101,7 +104,7 @@ public class TabEventApiProducts extends GenericTab {
 		proApiVer.setState(EventPortalWrapper.INSTANCE.getState(apiVer.getStateId()).getName());
 //		eventVerPro.setDetails(TopicUtils.buildTopic(apiVer.getDeliveryDescriptor()));
 		
-/*		eventVerPro.setLink(String.format(TopicUtils.EVENT_VER_URL, origDomain.getId(), event.getId(), apiVer.getId()));
+/*		eventVerPro.setLink(String.format(TopicUtils.EVENT_VER_URL, AppSettingsState.getInstance().baseUrl, origDomain.getId(), event.getId(), apiVer.getId()));
 		eventVerPro.setLastUpdated(TimeDeltaUtils.formatTime(apiVer.getUpdatedTime()));
 		eventVerPro.setLastUpdatedByUser(apiVer.getChangedBy());
 		eventVerPro.setCreatedByUser(apiVer.getCreatedBy());
@@ -124,18 +127,18 @@ public class TabEventApiProducts extends GenericTab {
 
 	private void generateTree(PortalRowObjectTreeNode parent, EventApiProduct product, ApplicationDomain domain, boolean domainInNotes) {
 //		List<PortalRowObject> rows = new ArrayList<>();
-		PortalRowObjectTreeNode proProduct = new PortalRowObjectTreeNode(EventPortalObjectType.EVENT_API_PRODUCT, product.getId());
+		PortalRowObjectTreeNode proProduct = new PortalRowObjectTreeNode(EventPortalObjectType.EVENT_API_PRODUCT, product, product.getId());
 		parent.addChild(proProduct);
 		proProduct.setIcon(MyIcons.ApiProductLarge);
 		proProduct.setName(product.getName() + (product.isShared() ? "*" : ""));
-		if (product.isShared()) proProduct.addNote("Shared");
-		proProduct.addNote(String.format("%s Event API Product",
-				TopicUtils.capitalFirst(product.getBrokerType().getValue())));
-		proProduct.addNote(String.format("%d %s",
+		if (product.isShared()) proProduct.addDetail("Shared");
+		proProduct.addDetail(String.format("%s Event API Product",
+				WordyUtils.capitalFirst(product.getBrokerType().getValue())));
+		proProduct.addDetail(String.format("%d %s",
 				product.getNumberOfVersions(),
-				TopicUtils.pluralize("Version",  product.getNumberOfVersions())));
-		if (domainInNotes) proProduct.addNote("Domain: " + domain.getName());
-		proProduct.setLink(String.format(TopicUtils.EVENT_API_PRODUCT_URL, domain.getId(), product.getId()));
+				WordyUtils.pluralize("Version",  product.getNumberOfVersions())));
+		if (domainInNotes) proProduct.addDetail("Domain: " + domain.getName());
+		proProduct.setLink(String.format(TopicUtils.EVENT_API_PRODUCT_URL, AppSettingsState.getInstance().baseUrl, domain.getId(), product.getId()));
 		proProduct.setLastUpdatedTs(TimeUtils.parseTime(product.getUpdatedTime()));
 		proProduct.setLastUpdatedByUser(product.getChangedBy());
 		proProduct.setCreatedByUser(product.getCreatedBy());
@@ -144,20 +147,20 @@ public class TabEventApiProducts extends GenericTab {
 		
 		for (EventApiProductVersion productVersion : EventPortalWrapper.INSTANCE.getEventApiProductVersionsForEventApiProductId(product.getId())) {
 //			appVer.get
-			PortalRowObjectTreeNode proProductVer = new PortalRowObjectTreeNode(EventPortalObjectType.EVENT_API_PRODUCT_VERSION, productVersion.getId());
+			PortalRowObjectTreeNode proProductVer = new PortalRowObjectTreeNode(EventPortalObjectType.EVENT_API_PRODUCT_VERSION, productVersion, productVersion.getId());
 			proProduct.addChild(proProductVer);
 			proProductVer.setIcon(MyIcons.apiProductSmall);
 			proProductVer.setName("v" + productVersion.getVersion());
 			
 			if (productVersion.getEventApiVersionIds().size() == 0) {
-				proProductVer.addNote("0 Event APIs referenced");
+				proProductVer.addDetail("0 Event APIs referenced");
 			} else {
-				proProductVer.addNote(String.format("%d %s referenced",
+				proProductVer.addDetail(String.format("%d %s referenced",
 						productVersion.getEventApiVersionIds().size(),
-						TopicUtils.pluralize("Event API", productVersion.getEventApiVersionIds().size())));
+						WordyUtils.pluralize("Event API", productVersion.getEventApiVersionIds().size())));
 			}
 			proProductVer.setState(EventPortalWrapper.INSTANCE.getState(productVersion.getStateId()).getName());
-			proProductVer.setLink(String.format(TopicUtils.EVENT_API_PRODUCT_VER_URL, domain.getId(), product.getId(), productVersion.getId()));
+			proProductVer.setLink(String.format(TopicUtils.EVENT_API_PRODUCT_VER_URL, AppSettingsState.getInstance().baseUrl, domain.getId(), product.getId(), productVersion.getId()));
 			proProductVer.setLastUpdatedTs(TimeUtils.parseTime(productVersion.getUpdatedTime()));
 			proProductVer.setLastUpdatedByUser(productVersion.getChangedBy());
 			proProductVer.setCreatedByUser(productVersion.getCreatedBy());
@@ -169,7 +172,7 @@ public class TabEventApiProducts extends GenericTab {
 				sb.append(plan.getName()).append(" Plan, ");
 //				plan.getSolaceClassOfServicePolicy().isGuaranteedMessaging() // null
 			}
-			proProductVer.setDetails(sb.toString());
+			proProductVer.setTopic(sb.toString());
 			
 			for (String apiVerId : productVersion.getEventApiVersionIds()) {  // for all EventVersions this AppVer produces...
 				EventApiVersion apiVer = EventPortalWrapper.INSTANCE.getEventApiVersion(apiVerId);

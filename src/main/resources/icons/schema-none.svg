@@ -10,7 +10,7 @@
    id="svg4878"
    sodipodi:docname="icons_master.svg"
    inkscape:version="1.2.1 (9c6d41e410, 2022-07-14)"
-   inkscape:export-filename="domain-large.svg"
+   inkscape:export-filename="apps-noevent.svg"
    inkscape:export-xdpi="96"
    inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
@@ -30,14 +30,14 @@
      inkscape:deskcolor="#d1d1d1"
      showgrid="true"
      inkscape:zoom="90.509668"
-     inkscape:cx="6.8169513"
-     inkscape:cy="9.0598056"
+     inkscape:cx="4.8503106"
+     inkscape:cy="11.048543"
      inkscape:window-width="3840"
      inkscape:window-height="2080"
      inkscape:window-x="-11"
      inkscape:window-y="-11"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer6">
+     inkscape:current-layer="layer1">
     <inkscape:grid
        type="xygrid"
        id="grid5067" />
@@ -45,7 +45,7 @@
   <g
      inkscape:groupmode="layer"
      id="layer1"
-     inkscape:label="Layer 1"
+     inkscape:label="Apps"
      style="display:none">
     <path
        sodipodi:type="star"
@@ -66,7 +66,7 @@
        inkscape:label="hex" />
     <path
        id="path1695-2"
-       style="display:none;opacity:0.8;fill:#40b6e0;fill-opacity:1;stroke-width:0.96225"
+       style="display:inline;opacity:0.8;fill:#40b6e0;fill-opacity:1;stroke-width:0.96225"
        inkscape:label="small hex"
        d="M 5.1132812,3 2.2265625,8 5.1132812,13 H 10.886719 L 13.773438,8 10.886719,3 Z" />
     <path
@@ -81,15 +81,15 @@
        d="M 10.886719,3.0000002 13.773438,7.9999998 10.886719,13 H 5.1132815 L 2.2265625,7.9999998 5.1132815,3.0000002 Z m -2.8867185,1 H 5.8457035 L 3.5351565,7.9999998 5.8457035,12 h 2.154297 z" />
     <path
        id="path1695-2-6"
-       style="display:inline;opacity:0.8;fill:#40b6e0;fill-opacity:1;stroke-width:0.96225"
+       style="display:none;opacity:0.8;fill:#40b6e0;fill-opacity:1;stroke-width:0.96225"
        inkscape:label="small hex both"
        d="M 5.1132812,3 2.2265625,8 5.1132812,13 H 10.886719 L 13.773438,8 10.886719,3 Z M 7,4 h 2 v 8 H 7 Z" />
   </g>
   <g
      inkscape:groupmode="layer"
      id="layer2"
-     inkscape:label="Layer 2"
-     style="display:none">
+     inkscape:label="Schemas"
+     style="display:inline">
     <path
        sodipodi:type="star"
        style="display:none;opacity:0.6;fill:#b99bf8;fill-opacity:1"
@@ -126,6 +126,13 @@
        inkscape:transform-center-y="-1.7320508"
        transform="matrix(0.73438809,0,0,0.73438809,2.1248953,3.6607936)"
        inkscape:label="small triangle" />
+    <path
+       id="path4002-9-4"
+       style="display:none;opacity:0.8;fill:#b99bf8;fill-opacity:1"
+       inkscape:label="small triangle cutout"
+       inkscape:transform-center-y="-1.7320508"
+       d="M 8,-1.4343531 -0.17006716,12.71699 H 9.3616778 V 5.9086011 h 2.8776082 z"
+       transform="matrix(0.73438809,0,0,0.73438809,2.1248953,3.6607937)" />
   </g>
   <g
      inkscape:groupmode="layer"
@@ -217,7 +224,7 @@
      inkscape:groupmode="layer"
      id="layer6"
      inkscape:label="Domain"
-     style="display:inline">
+     style="display:none">
     <path
        id="rect13081"
        style="display:none;opacity:0.8;fill:#9aa790;fill-opacity:1"
@@ -234,5 +241,13 @@
   <g
      inkscape:groupmode="layer"
      id="layer7"
-     inkscape:label="Layer 7" />
+     inkscape:label="modifiers"
+     style="display:inline">
+    <path
+       style="display:inline;opacity:0.6;fill:#ff0000"
+       d="M 3,14 14,3 13,2 2,13"
+       id="path592"
+       sodipodi:nodetypes="cccc"
+       inkscape:label="red bar" />
+  </g>
 </svg>

@@ -19,6 +19,7 @@ import com.intellij.openapi.progress.util.ProgressIndicatorBase;
 import com.intellij.ui.AnimatedIcon;
 import com.intellij.util.concurrency.AppExecutorUtil;
 
+import community.solace.ep.idea.plugin.settings.AppSettingsState;
 import community.solace.ep.idea.plugin.utils.TokenHolder;
 import community.solace.ep.wrapper.EventPortalWrapper;
 
@@ -63,10 +64,18 @@ public class LoadRefreshButton extends AnAction {
 			@Override
 			public void run() {
 				try {
-			        EventPortalWrapper.INSTANCE.setToken(TokenHolder.props.getProperty("token"));
-					EventPortalWrapper.INSTANCE.loadAll(AppExecutorUtil.getAppExecutorService());
-					Notifications.Bus.notify(new Notification("ep20", "Solace Event Portal", "Successfully loaded all domains and objects", NotificationType.INFORMATION));
-					notifyObservers();  // tell my listeners to redraw
+					if (AppSettingsState.getInstance().tokenId.isEmpty()) {
+						Notifications.Bus.notify(new Notification("ep20", "Solace Event Portal", "Configure Token in Settings", NotificationType.WARNING));
+						return;
+					}
+//			        EventPortalWrapper.INSTANCE.setToken(TokenHolder.props.getProperty("token"));
+					EventPortalWrapper.INSTANCE.setToken(AppSettingsState.getInstance().tokenId);
+					if (EventPortalWrapper.INSTANCE.loadAll(AppExecutorUtil.getAppExecutorService())) {
+						Notifications.Bus.notify(new Notification("ep20", "Solace Event Portal", "Successfully loaded all domains and objects", NotificationType.INFORMATION));
+						notifyObservers();  // tell my listeners to redraw
+					} else {  // problem loading!
+						Notifications.Bus.notify(new Notification("ep20", "Solace Event Portal", "Had some issue loading: "+EventPortalWrapper.INSTANCE.getLoadErrorString(), NotificationType.WARNING));
+					}
 				} catch (RuntimeException e) {
 					Notifications.Bus.notify(new Notification("ep20", "Solace Event Portal", e.toString(), NotificationType.ERROR));
 				} finally {
@@ -100,7 +109,9 @@ public class LoadRefreshButton extends AnAction {
 	    		if (!hasBeenClickedUpdate.compareAndSet(true, false)) return;
 //	    		event.getPresentation().setIcon(AllIcons.Actions.Download);
 //	    		event.getPresentation().setEnabled(false);
-	    		event.getPresentation().setIcon(new AnimatedIcon.Default());
+	    		event.getPresentation().setIcon(new AnimatedIcon.Default());  // the loading icon
+	    		AnimatedIcon loading = new AnimatedIcon.Default();
+//	    		loading.setIn
 	    	} else {
 //	    		event.getPresentation().setIcon(AllIcons.Actions.Refresh);
 	    		event.getPresentation().setIcon(AllIcons.Actions.BuildLoadChanges);

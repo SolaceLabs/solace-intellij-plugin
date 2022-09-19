@@ -11,6 +11,8 @@ import java.time.format.FormatStyle;
 import java.util.Date;
 import java.util.Locale;
 
+import community.solace.ep.idea.plugin.settings.AppSettingsState;
+
 public class TimeUtils {
 
 	
@@ -32,9 +34,14 @@ public class TimeUtils {
 		TIMESTAMP,
 		CASUAL,
 		;
+		
+		@Override
+		public String toString() {
+			return WordyUtils.capitalFirst(this.name());
+		}
 	}
 	
-	public static Format format = Format.CASUAL;
+//	public static Format format = Format.CASUAL;
 
 	private static final DateTimeFormatter CASUAL_FORMAT = DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM).withLocale(Locale.getDefault());
 	private static final DateTimeFormatter TIMESTAMP_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss XX").withZone(ZoneId.systemDefault());
@@ -43,6 +50,7 @@ public class TimeUtils {
 	
 	
 	public static String formatTime(long ts) {
+		Format format = AppSettingsState.getInstance().dateTimeFormat;
 //		Date d = new Date(ts);
 		ZonedDateTime dateTime = Instant.ofEpochMilli(ts).atZone(ZoneId.systemDefault());
 		if (format == Format.TIMESTAMP) {
@@ -90,24 +98,24 @@ public class TimeUtils {
 			sb.append("about ").append(deltaSeconds).append(" seconds");
 		} else if (deltaSeconds < 3600) {
 			int val = (int)Math.round(deltaSeconds / 60.0);
-			sb.append("about ").append(val).append(TopicUtils.pluralize(" minute", val));
+			sb.append("about ").append(val).append(WordyUtils.pluralize(" minute", val));
 		} else if (deltaSeconds < 86_400) {
 			int deltaHalfHours = (int)((deltaSeconds + 900) / 1800);  // minus 15 minutes to shift from quarter-to to quarter-after
 //			if (deltaHalfHours % 2 == 1) {
 //				sb.append("about ").append(deltaHalfHours / 2).append("½ hours");
 //			} else {
-				sb.append("about ").append(deltaHalfHours / 2).append(TopicUtils.pluralize(" hour", deltaHalfHours / 2));
+				sb.append("about ").append(deltaHalfHours / 2).append(WordyUtils.pluralize(" hour", deltaHalfHours / 2));
 //			}
 		} else if (deltaSeconds < 2_592_000) {  // about a month
 			int deltaHalfDays = (int)((deltaSeconds + (3600 * 6)) / (3600 * 12));
 //			if (deltaHalfDays % 2 == 1) {
 //				sb.append("about ").append(deltaHalfDays / 2).append("½ days");
 //			} else {
-				sb.append("about ").append(deltaHalfDays / 2).append(TopicUtils.pluralize(" day", deltaHalfDays / 2));
+				sb.append("about ").append(deltaHalfDays / 2).append(WordyUtils.pluralize(" day", deltaHalfDays / 2));
 //			}
 		} else if (deltaSeconds < 31_557_600) {  // a year
 			int deltaMonths = (int)(deltaSeconds / (3600 * 24 * 30.4375));  // rough approximation
-			sb.append("about ").append(deltaMonths).append(TopicUtils.pluralize(" month", deltaMonths));
+			sb.append("about ").append(deltaMonths).append(WordyUtils.pluralize(" month", deltaMonths));
 		} else {
 			sb.append("more than a year");
 		}
@@ -116,7 +124,8 @@ public class TimeUtils {
 		} else {
 			sb.append(" ago");
 		}
-		return TopicUtils.capitalFirst(sb.toString());
+		return WordyUtils.capitalOnlyFirst(sb.toString());
+//		return sb.toString();
 	}
 	
 	

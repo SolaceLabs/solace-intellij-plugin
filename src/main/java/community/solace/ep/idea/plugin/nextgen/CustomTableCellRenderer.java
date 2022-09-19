@@ -6,13 +6,17 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.EventObject;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.event.CellEditorListener;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableCellEditor;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -21,13 +25,75 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.ui.components.ActionLink;
 import com.intellij.ui.components.AnActionLink;
+import com.intellij.ui.table.TableView;
 
 import community.solace.ep.idea.plugin.utils.EPObjectHelper;
 import community.solace.ep.idea.plugin.utils.TimeUtils;
 import community.solace.ep.wrapper.EventPortalObjectType;
 import community.solace.ep.wrapper.EventPortalWrapper;
+import icons.MyIcons;
 
 public class CustomTableCellRenderer extends DefaultTableCellRenderer {
+	
+	public static class Test implements TableCellEditor {
+		
+		final TableView<PortalRowObjectTreeNode> tableView;
+		
+		public Test(TableView<PortalRowObjectTreeNode> tableView) {
+			this.tableView = tableView;
+		}
+
+		@Override
+		public Object getCellEditorValue() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public boolean isCellEditable(EventObject anEvent) {
+			// TODO Auto-generated method stub
+			JOptionPane.showMessageDialog(null, "My Goodness, this is so concise");
+			return false;
+		}
+
+		@Override
+		public boolean shouldSelectCell(EventObject anEvent) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean stopCellEditing() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void cancelCellEditing() {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void addCellEditorListener(CellEditorListener l) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public void removeCellEditorListener(CellEditorListener l) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		@Override
+		public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+		
+	}
+	
 
 	private static final long serialVersionUID = 1L;
 	private static final EventPortalWrapper EPW = EventPortalWrapper.INSTANCE;
@@ -42,11 +108,18 @@ public class CustomTableCellRenderer extends DefaultTableCellRenderer {
 		return new Color(255-orig.getRed(), 255-orig.getGreen(), 255-orig.getBlue());
 	}
 	
-	@NotNull
-	private static final AnAction EMPTY_EVENT = new AnAction() {
+	 static class MessageAction extends AnAction {
+		
+		final String message;
+		
+		public MessageAction(String message) {
+			super(message);
+			this.message = message;
+		}
+		
 		@Override
 		public void actionPerformed(@NotNull AnActionEvent e) {
-			// nothing
+			JOptionPane.showMessageDialog(null, message);
 		}
 	};
 
@@ -116,8 +189,8 @@ public class CustomTableCellRenderer extends DefaultTableCellRenderer {
             con.weightx = 1;
             con.insets = new Insets(0, 0, 0, 0);
             
-			ActionLink externalLink2 = new AnActionLink(pro.getName(), EMPTY_EVENT);
-			externalLink2.setExternalLinkIcon();
+			ActionLink externalLink2 = new AnActionLink(pro.getName(), new MessageAction("nav link " + pro.getName()));
+			if (!pro.getLink().isEmpty()) externalLink2.setExternalLinkIcon();
 			Font f = externalLink2.getFont();
 			externalLink2.setFont(f.deriveFont(f.getStyle() | Font.BOLD));
 //			externalLink2.setForeground(table.getForeground());
@@ -147,9 +220,9 @@ public class CustomTableCellRenderer extends DefaultTableCellRenderer {
             con.anchor = GridBagConstraints.LINE_START;
             con.weightx = 0.0;
             int x = 0;
-            for (String note : pro.getNotes()) {
+            for (String note : pro.getDetails()) {
             	con.gridx = x++;
-            	panel.add(new JLabel(note + (x < pro.getNotes().size() ? "; " : "")), con);
+            	panel.add(new JLabel(note + (x < pro.getDetails().size() ? "; " : "")), con);
             }
         	con.gridx = x++;
             con.weightx = 1;
@@ -181,22 +254,24 @@ public class CustomTableCellRenderer extends DefaultTableCellRenderer {
 //			cellComponent.setForeground(Color.GRAY);
 			break;
 		case 4:
-			((JLabel)cellComponent).setText(pro.getDetails());
+			((JLabel)cellComponent).setText(pro.getTopic());
 			cellComponent.setFont(new Font("Lucida Console", Font.PLAIN, 14));
 			break;
 		case 5:
 			JLabel l = (JLabel)cellComponent;
-			l.setText(TimeUtils.formatTime(pro.getLastUpdated()));
-			if (pro.getCreatedByUserId().equals(pro.getLastUpdatedByUserId())) {
-				l.setToolTipText(String.format("Created and last updated by %s",
-						EPW.getUserName(pro.getLastUpdatedByUserId())));
+			if (pro.getLastUpdated() > 0) {
+				l.setText(TimeUtils.formatTime(pro.getLastUpdated()));
+				if (pro.getCreatedByUserId().equals(pro.getLastUpdatedByUserId())) {
+					l.setToolTipText(String.format("Created and last updated by %s",
+							EPW.getUserName(pro.getLastUpdatedByUserId())));
+				} else {
+					l.setToolTipText(String.format("Created by %s; Last updated by %s",
+							EPW.getUserName(pro.getCreatedByUserId()),
+							EPW.getUserName(pro.getLastUpdatedByUserId())));
+				}
 			} else {
-				l.setToolTipText(String.format("Created by %s; Last updated by %s",
-						EPW.getUserName(pro.getCreatedByUserId()),
-						EPW.getUserName(pro.getLastUpdatedByUserId())));
+				l.setText("");
 			}
-//			JToolTip jt = l.createToolTip();
-//			jt.pai
 			break;
 		case 6:  // links / actions
 			((JLabel)cellComponent).setText("");
@@ -209,17 +284,33 @@ public class CustomTableCellRenderer extends DefaultTableCellRenderer {
             con.anchor = GridBagConstraints.LINE_START;
             con.weightx = 1;
 //            int x = 0;
-			if (pro.getType() == EventPortalObjectType.APPLICATION_VERSION ) {
-				AnActionLink externalLink = new AnActionLink("Download AsyncAPI...", EMPTY_EVENT);
-				externalLink.setExternalLinkIcon();
+			if (pro.getType() == EventPortalObjectType.APPLICATION_VERSION || pro.getType() == EventPortalObjectType.EVENT_API_VERSION) {
+				AnActionLink link = new AnActionLink("View AsyncAPI", new MessageAction("asyncApi " + pro.getName()));
+//				link.setIcon(MyIcons.AsyncApi2, false);
+//				externalLink.setExternalLinkIcon();
 //				externalLink.setBackground(cellComponent.getBackground());
-				panel.add(externalLink, con);
+				panel.add(link, con);
+				
+//				link = new AnActionLink("Download Codegen...", new MessageAction("download " + pro.getName()));
+//				link.setExternalLinkIcon();
+//				externalLink.setBackground(cellComponent.getBackground());
+//				panel.add(link, con);
+
 //				return externalLink;
 			} else if (pro.getType() == EventPortalObjectType.EVENT_VERSION) {
 //				ActionLink externalLink = new AnActionLink("Generate Schema POJO...", EMPTY_EVENT);
-				ActionLink externalLink = new AnActionLink("Copy schema to clipboard...", EMPTY_EVENT);
+//				ActionLink externalLink = new AnActionLink("Copy schema to clipboard...", EMPTY_EVENT);
 //				externalLink.setBackground(cellComponent.getBackground());
-				panel.add(externalLink, con);
+//				panel.add(externalLink, con);
+			} else if (pro.getType() == EventPortalObjectType.SCHEMA_VERSION && !pro.getLink().isBlank()) {
+//				ActionLink externalLink = new AnActionLink("Generate Schema POJO...", EMPTY_EVENT);
+				ActionLink link = new AnActionLink("View schema", new MessageAction("view schema " + pro.getName()));
+//				externalLink.setBackground(cellComponent.getBackground());
+				panel.add(link, con);
+//			} else if (pro.getType() == EventPortalObjectType.SCHEMA) {
+//				ActionLink link = new AnActionLink("View description", new MessageAction("Nothing "));
+//				panel.add(link, con);
+				
 			}
 			return panel;
 		case 7:
