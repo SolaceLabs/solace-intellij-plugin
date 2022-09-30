@@ -38,6 +38,8 @@ To keep everything working, do not remove `<!-- ... -->` sections.
 1. Clone this repo
 2. `./gradlew clean buildPlugin
 
+The zip file to load into IntelliJ will be located in `build/distributions/`
+
 
 ## Installation
 
