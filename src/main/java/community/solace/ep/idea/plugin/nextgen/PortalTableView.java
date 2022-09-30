@@ -2,6 +2,8 @@ package community.solace.ep.idea.plugin.nextgen;
 
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -13,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
+import com.intellij.icons.AllIcons;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.json.JsonFileType;
 import com.intellij.notification.Notification;
@@ -86,7 +89,7 @@ public class PortalTableView extends TableView<PortalRowObjectTreeNode> {
     
     private void init() {
         this.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        this.setCellSelectionEnabled(false);
+        this.setCellSelectionEnabled(true);
 //        this.setStriped(true);
 //        this.setCursor(new Cursor(Cursor.HAND_CURSOR));
 //        this.setAutoCreateRowSorter(true);
@@ -95,9 +98,29 @@ public class PortalTableView extends TableView<PortalRowObjectTreeNode> {
 //        this.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
         if (AppSettingsState.getInstance().tokenId.isEmpty()) {
-        	this.getEmptyText().setText("Add token in Event Portal Settings!", SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES);
+//        	this.getEmptyText().setText("", SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES);
+        	this.getEmptyText().clear();
+        	this.getEmptyText().setCenterAlignText(false);
+        	this.getEmptyText().appendLine(AllIcons.General.Settings, "Add token in Event Portal Settings!", SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES, null);
+        	this.getEmptyText().appendLine("File  >  Settings...  >  Tools  >  Solace Event Portal");
+        	this.getEmptyText().appendLine("");
+        	this.getEmptyText().appendLine(AllIcons.Actions.Execute, "Then load Event Portal data!", SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES, null);
+//        	this.getEmptyText().appendLine(AllIcons.Actions.Execute, "Then load Event Portal data!", SimpleTextAttributes.LINK_BOLD_ATTRIBUTES, new ActionListener() {
+//				@Override
+//				public void actionPerformed(ActionEvent e) {
+//					myParentTab.getFactory().clickLoadButton(e);
+//				}
+//			});
         } else {
-        	this.getEmptyText().setText("Load Event Portal data!", SimpleTextAttributes.LINK_PLAIN_ATTRIBUTES);
+        	this.getEmptyText().clear();
+//        	this.getEmptyText().setText("Load Event Portal data!", SimpleTextAttributes.LINK_PLAIN_ATTRIBUTES);
+        	this.getEmptyText().appendLine(AllIcons.Actions.Execute, "Load Event Portal data!", SimpleTextAttributes.REGULAR_BOLD_ATTRIBUTES, null);
+//        	this.getEmptyText().appendLine(AllIcons.Actions.Execute, "Load Event Portal data!", SimpleTextAttributes.LINK_BOLD_ATTRIBUTES, new ActionListener() {
+//				@Override
+//				public void actionPerformed(ActionEvent e) {
+//					myParentTab.getFactory().clickLoadButton();
+//				}
+//			});
         }
 //        StatusText st = StatusText.
 //        emptyText.setText(VcsLogBundle.message("vcs.log.changes.no.changes.that.affect.selected.paths.status"))

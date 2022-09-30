@@ -21,6 +21,7 @@ import community.solace.ep.idea.plugin.utils.TopicUtils;
 import community.solace.ep.idea.plugin.utils.WordyUtils;
 import community.solace.ep.wrapper.EventPortalObjectType;
 import community.solace.ep.wrapper.EventPortalWrapper;
+import community.solace.ep.wrapper.EventPortalWrapper.LoadStatus;
 import icons.MyIcons;
 
 /**
@@ -36,6 +37,7 @@ public class TabApplications extends GenericTab {
 
 	@Override
 	public void refreshSortByDomain() {
+		if (EventPortalWrapper.INSTANCE.getLoadStatus() == LoadStatus.UNINITIALIZED) return;
 		PortalRowObjectTreeNode root = new PortalRowObjectTreeNode(null, null, "");  // root
 		try {
 			for (ApplicationDomain domain : EventPortalWrapper.INSTANCE.getDomains()) {
@@ -72,6 +74,7 @@ public class TabApplications extends GenericTab {
 	}
 
 	public void refreshSortByAlpha() {
+		if (EventPortalWrapper.INSTANCE.getLoadStatus() == LoadStatus.UNINITIALIZED) return;
 		PortalRowObjectTreeNode root = new PortalRowObjectTreeNode(null, null, "");  // root
 		try {
 			for (Application app : EventPortalWrapper.INSTANCE.getApplications()) {

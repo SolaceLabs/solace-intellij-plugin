@@ -61,6 +61,12 @@ public class PortalTabToolbar extends NonOpaquePanel {
 
 		return ActionManager.getInstance().createActionToolbar("ep-toolbar", actionGroup, false);
 	}
+	
+//	private volatile boolean enabled = false;
+//	
+//	public void setEnabled(boolean enabled) {
+//		this.enabled = enabled;
+//	}
 
 
 
@@ -76,6 +82,7 @@ public class PortalTabToolbar extends NonOpaquePanel {
 
 		@Override
 		public boolean isSelected(@NotNull AnActionEvent e) {
+//			e.getPresentation().setEnabled(enabled);
 			return currentSortStateObjects.get();
 		}
 
@@ -97,6 +104,7 @@ public class PortalTabToolbar extends NonOpaquePanel {
 
 		@Override
 		public boolean isSelected(@NotNull AnActionEvent e) {
+//			e.getPresentation().setEnabled(enabled);
 			e.getPresentation().setEnabled(false);
 			return hideEmptyDomains;
 		}
@@ -116,6 +124,7 @@ public class PortalTabToolbar extends NonOpaquePanel {
 
 		@Override
 		public boolean isSelected(@NotNull AnActionEvent e) {
+//			e.getPresentation().setEnabled(enabled);
 			return !currentSortStateObjects.get();
 		}
 
@@ -131,6 +140,12 @@ public class PortalTabToolbar extends NonOpaquePanel {
 		protected ActionExpandAll() {
 			super("Expand Next", "Expand Next", AllIcons.Actions.Expandall);
 		}
+		
+		@Override
+		public void update(@NotNull AnActionEvent e) {
+			super.update(e);
+//			e.getPresentation().setEnabled(enabled);
+		}
 
 		@Override
 		public void actionPerformed(@NotNull AnActionEvent e) {
@@ -142,6 +157,12 @@ public class PortalTabToolbar extends NonOpaquePanel {
 
 		protected ActionCollapseAll() {
 			super("Collapse All", "Collapse All", AllIcons.Actions.Collapseall);
+		}
+
+		@Override
+		public void update(@NotNull AnActionEvent e) {
+			super.update(e);
+//			e.getPresentation().setEnabled(enabled);
 		}
 
 		@Override

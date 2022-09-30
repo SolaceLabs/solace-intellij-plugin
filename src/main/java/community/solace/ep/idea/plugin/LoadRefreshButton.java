@@ -20,7 +20,6 @@ import com.intellij.ui.AnimatedIcon;
 import com.intellij.util.concurrency.AppExecutorUtil;
 
 import community.solace.ep.idea.plugin.settings.AppSettingsState;
-import community.solace.ep.idea.plugin.utils.TokenHolder;
 import community.solace.ep.wrapper.EventPortalWrapper;
 
 public class LoadRefreshButton extends AnAction {

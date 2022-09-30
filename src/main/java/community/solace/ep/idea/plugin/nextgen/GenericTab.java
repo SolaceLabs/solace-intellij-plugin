@@ -70,15 +70,19 @@ abstract class GenericTab implements LoadRefreshButton.Observer, PortalToolbarLi
 	
 	@Override
 	public void expandNextClicked() {
-		tableModel.getRoot().expandNext();
-		tableModel.flatten();
+		if (tableModel != null && tableModel.getRoot() != null) {
+			tableModel.getRoot().expandNext();
+			tableModel.flatten();
+		}
 	}
 	
 	
 	@Override
 	public void collapseAllClicked() {
-		tableModel.getRoot().collapse();
-		tableModel.flatten();
+		if (tableModel != null && tableModel.getRoot() != null) {
+			tableModel.getRoot().collapse();
+			tableModel.flatten();
+		}
 	}
 
 	@Override

@@ -19,6 +19,7 @@
 
 <p>This is an Early Access version of a plugin for connecting and browsing the Solace PubSub+ Event Portal.  More text here.</p>
 
+
 For this text, you can use either Markdown or HTML.
 
 - Hello
@@ -32,16 +33,22 @@ This specific section is a source for the [plugin.xml](/src/main/resources/META-
 To keep everything working, do not remove `<!-- ... -->` sections. 
 <!-- Plugin description end -->
 
+## Building
+
+1. Clone this repo
+2. `./gradlew clean buildPlugin
+
+
 ## Installation
 
 - Using IDE built-in plugin system:
   
-  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "idea-plugin-1"</kbd> >
+  <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>Marketplace</kbd> > <kbd>Search for "solace-event-portal</kbd> >
   <kbd>Install Plugin</kbd>
   
 - Manually:
 
-  Download the [latest release](https://github.com/aaron-613/idea-plugin-1/releases/latest) and install it manually using
+  Download the [latest release](https://github.com/SolaceLabs/solace-intellij-plugin/releases/latest) and install it manually using
   <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
 
 

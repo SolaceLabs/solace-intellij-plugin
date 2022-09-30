@@ -30,7 +30,6 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.ScrollPaneFactory;
-import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.content.ContentManager;
@@ -60,6 +59,7 @@ public class SolaceEventPortalToolWindowFactory implements ToolWindowFactory {
 
 	private Project mainProject = null;
 	private ToolWindow toolWindow = null;
+	private LoadRefreshButton loadButton = null;
 
 /*	public static class NewWindow implements Disposable {
 
@@ -214,13 +214,16 @@ public class SolaceEventPortalToolWindowFactory implements ToolWindowFactory {
 		}
 	}
 	
+	public void clickLoadButton(AnActionEvent event) {
+		loadButton.actionPerformed(event);
+	}
 
 	@Override
 	public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
 		this.mainProject = project;
 		this.toolWindow = toolWindow;
 
-		LoadRefreshButton loadButton = new LoadRefreshButton();
+		this.loadButton = new LoadRefreshButton();
 		List<AnAction> titleActions = new ArrayList<>();
 		titleActions.add(new SearchAll());
 		titleActions.add(loadButton);
