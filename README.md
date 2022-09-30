@@ -1,6 +1,8 @@
 # Solace Event Portal Plugin for IntelliJ IDEA
 
-## _This README is still default tepmlate, will be updated soon_
+## _This README is still default template, will be updated soon_
+
+Build instructions down below, read those.
 
 ![Build](https://github.com/aaron-613/idea-plugin-1/workflows/Build/badge.svg)
 [![Version](https://img.shields.io/jetbrains/plugin/v/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
@@ -38,7 +40,7 @@ To keep everything working, do not remove `<!-- ... -->` sections.
 ## Building
 
 1. Clone this repo
-2. `./gradlew clean buildPlugin
+2. `./gradlew clean buildPlugin`
 
 The zip file to load into IntelliJ will be located in `build/distributions/`
 
