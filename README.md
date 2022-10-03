@@ -1,36 +1,13 @@
-# Solace Event Portal Plugin for IntelliJ IDEA
-
-## _This README is still default template, will be updated soon_
-
-Build instructions down below, read those.
-
-![Build](https://github.com/aaron-613/idea-plugin-1/workflows/Build/badge.svg)
-[![Version](https://img.shields.io/jetbrains/plugin/v/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
-[![Downloads](https://img.shields.io/jetbrains/plugin/d/PLUGIN_ID.svg)](https://plugins.jetbrains.com/plugin/PLUGIN_ID)
-
-## Template ToDo list
-- [x] Create a new [IntelliJ Platform Plugin Template][template] project.
-- [ ] Get familiar with the [template documentation][template].
-- [ ] Verify the [pluginGroup](/gradle.properties), [plugin ID](/src/main/resources/META-INF/plugin.xml) and [sources package](/src/main/kotlin).
-- [ ] Review the [Legal Agreements](https://plugins.jetbrains.com/docs/marketplace/legal-agreements.html).
-- [ ] [Publish a plugin manually](https://plugins.jetbrains.com/docs/intellij/publishing-plugin.html?from=IJPluginTemplate) for the first time.
-- [ ] Set the Plugin ID in the above README badges.
-- [ ] Set the [Deployment Token](https://plugins.jetbrains.com/docs/marketplace/plugin-upload.html).
-- [ ] Click the <kbd>Watch</kbd> button on the top of the [IntelliJ Platform Plugin Template][template] to be notified about releases containing new features and fixes.
+# Solace PubSub+ Event Portal Plugin for IntelliJ IDEA
 
 <!-- Plugin description -->
-<h2>Solace PubSub+ Event Portal Plugin</h2>
+This plugin will connect to the Solace PubSub+ Event Portal pull down various object to display in IntelliJ.
 
-<p>This is an Early Access version of a plugin for connecting and browsing the Solace PubSub+ Event Portal.  More text here.</p>
+To use it, you must login to the Solace Event Portal and create a token.  It should have the following permissions:
 
-
-For this text, you can use either Markdown or HTML.
-
-- Hello
-- There
-- World
-
-<ul><li>what</li><li>about</li><li>this?</li></ul>
+- All Read permissions for Event Portal
+- Get Users (under Account Management)
+- View Environments (optional)
 
 This specific section is a source for the [plugin.xml](/src/main/resources/META-INF/plugin.xml) file which will be extracted by the [Gradle](/build.gradle.kts) during the build process.
 
@@ -59,6 +36,5 @@ The zip file to load into IntelliJ will be located in `build/distributions/`
 
 
 ---
-Plugin based on the [IntelliJ Platform Plugin Template][template].
 
-[template]: https://github.com/JetBrains/intellij-platform-plugin-template
+Hello

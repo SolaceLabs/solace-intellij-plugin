@@ -3,11 +3,17 @@
 (somewhat in order of priority)
 
 - Improve README with build instructions
+- Update the Wrapper with better error handling issues
 - Kafka SCSt Application codegen
 - Codegen button for EventAPIs and API Products
 - When viewing schema in plugin, add details on left like: Domain, App, Version, Name, etc.
+- Publish plugin to JetBrains marketplace (https://plugins.jetbrains.com/docs/intellij/publishing-plugin.html?from=IJPluginTemplate)
+   - Read about plugin signing
+   - Sign up for Access Token
+   - Read about Optimizing for Marketplace
 - Track/store relative sizes of columns (when resize, trigger something that puts into datastore, need relative in case of resolution / size change
-- Put token into vault rather than just datastore?
+- Change Col 1 & Col 2 to be the same thing... and then make "View in Portal" another buttom or something
+- Put EP token into local vault rather than just local datastore?
 - Rabbit SCSt Application codegen
 - Generic JMS Applicaiton codegen
 
