@@ -75,6 +75,7 @@ public class LoadRefreshButton extends AnAction {
 					} else {  // problem loading!
 						Notifications.Bus.notify(new Notification("ep20", "Solace Event Portal", "Had some issue loading: "+EventPortalWrapper.INSTANCE.getLoadErrorString(), NotificationType.WARNING));
 					}
+					
 				} catch (RuntimeException e) {
 					Notifications.Bus.notify(new Notification("ep20", "Solace Event Portal", e.toString(), NotificationType.ERROR));
 				} finally {
