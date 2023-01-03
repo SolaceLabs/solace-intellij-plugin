@@ -9,6 +9,10 @@ To use it, you must login to the Solace Event Portal and create a token.  It sho
 - Get Users (under Account Management)
 - View Environments (optional)
 
+## Introduction Video
+[![Tour of EP IntelliJ Plugin](https://img.youtube.com/vi/gmoFbjf5pZo/0.jpg)](https://www.youtube.com/watch?v=gmoFbjf5pZo)
+
+
 This specific section is a source for the [plugin.xml](/src/main/resources/META-INF/plugin.xml) file which will be extracted by the [Gradle](/build.gradle.kts) during the build process.
 
 To keep everything working, do not remove `<!-- ... -->` sections. 
@@ -35,6 +39,5 @@ The zip file to load into IntelliJ will be located in `build/distributions/`
   <kbd>Settings/Preferences</kbd> > <kbd>Plugins</kbd> > <kbd>⚙️</kbd> > <kbd>Install plugin from disk...</kbd>
 
 
----
 
-Hello
+
