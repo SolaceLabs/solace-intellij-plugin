@@ -1,7 +1,9 @@
 # Solace PubSub+ Event Portal Plugin for IntelliJ IDEA
 
 <!-- Plugin description -->
-This plugin will connect to the Solace PubSub+ Event Portal pull down various object to display in IntelliJ.
+This plugin will connect to the Solace PubSub+ Event Portal pull down various object to display in IntelliJ. 
+
+This repository contains one way of using Event Portal in your Software Development Lifecycle. Check out the [Supercharge your Software Development Lifecycle with PubSub+ Event Portal](https://solace.com/blog/software-development-lifecycle-with-event-portal) blog to learn about other ways you can use Event Portal to throughout your SDLC. 
 
 To use it, you must login to the Solace Event Portal and create a token.  It should have the following permissions:
 
