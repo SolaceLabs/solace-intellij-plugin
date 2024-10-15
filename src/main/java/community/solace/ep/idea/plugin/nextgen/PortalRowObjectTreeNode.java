@@ -7,7 +7,7 @@ import javax.swing.Icon;
 
 import com.intellij.icons.AllIcons;
 
-import community.solace.ep.wrapper.EventPortalObjectType;
+import community.solace.ep.wrapper.SupportedObjectType;
 
 public class PortalRowObjectTreeNode {
 
@@ -21,7 +21,7 @@ public class PortalRowObjectTreeNode {
 	 * "topicDomainEnforcementEnabled": false, "type": "applicationDomain" },
 	 */
 
-	final EventPortalObjectType type;
+	final SupportedObjectType type;
 	final Object eventPortalObject;
 	final String id;
 	String name = "";
@@ -41,7 +41,7 @@ public class PortalRowObjectTreeNode {
 	volatile boolean expanded = true;
 	volatile boolean hidden = false;
 
-	public PortalRowObjectTreeNode(EventPortalObjectType type, Object eventPortalObject, String id) {
+	public PortalRowObjectTreeNode(SupportedObjectType type, Object eventPortalObject, String id) {
 		this.type = type;
 		this.eventPortalObject = eventPortalObject;
 		this.id = id;
@@ -70,7 +70,7 @@ public class PortalRowObjectTreeNode {
 		this.link = link;
 	}
 
-	public EventPortalObjectType getType() {
+	public SupportedObjectType getType() {
 		return type;
 	}
 
@@ -159,7 +159,7 @@ public class PortalRowObjectTreeNode {
 		while (!stack.isEmpty()) {
 			PortalRowObjectTreeNode node = stack.remove(0);
 			if (!hidden) {
-				if (node.type != EventPortalObjectType.DOMAIN || node.hasChildren()) {
+				if (node.type != SupportedObjectType.DOMAIN || node.hasChildren()) {
 					rows.add(node);
 				}
 				if (node.isExpanded() && node.hasChildren()) {

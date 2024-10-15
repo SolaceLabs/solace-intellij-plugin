@@ -1,5 +1,7 @@
 package community.solace.ep.idea.plugin.nextgen;
 
+import java.util.List;
+
 import javax.swing.Icon;
 
 import com.intellij.openapi.diagnostic.Logger;
@@ -16,8 +18,8 @@ import community.solace.ep.idea.plugin.settings.AppSettingsState;
 import community.solace.ep.idea.plugin.utils.TimeUtils;
 import community.solace.ep.idea.plugin.utils.TopicUtils;
 import community.solace.ep.idea.plugin.utils.WordyUtils;
-import community.solace.ep.wrapper.EventPortalObjectType;
 import community.solace.ep.wrapper.EventPortalWrapper;
+import community.solace.ep.wrapper.SupportedObjectType;
 import icons.MyIcons;
 
 /**
@@ -36,7 +38,7 @@ public class TabEventApiProducts extends GenericTab {
 		PortalRowObjectTreeNode root = new PortalRowObjectTreeNode(null, null, "");  // root
 		try {
 			for (ApplicationDomain domain : EventPortalWrapper.INSTANCE.getDomains()) {
-				PortalRowObjectTreeNode row = new PortalRowObjectTreeNode(EventPortalObjectType.DOMAIN, domain, domain.getId());
+				PortalRowObjectTreeNode row = new PortalRowObjectTreeNode(SupportedObjectType.DOMAIN, domain, domain.getId());
 				row.setIcon(MyIcons.DomainLarge);
 				root.addChild(row);
 				row.setName(domain.getName());
@@ -93,13 +95,13 @@ public class TabEventApiProducts extends GenericTab {
 		
 		EventApi api = EventPortalWrapper.INSTANCE.getEventApi(apiVer.getEventApiId());
 		ApplicationDomain origDomain = EventPortalWrapper.INSTANCE.getDomain(api.getApplicationDomainId());
-		PortalRowObjectTreeNode proApiVer = new PortalRowObjectTreeNode(EventPortalObjectType.EVENT_API_VERSION, apiVer, apiVer.getId());
+		PortalRowObjectTreeNode proApiVer = new PortalRowObjectTreeNode(SupportedObjectType.EVENT_API_VERSION, apiVer, apiVer.getId());
 		// is there a schema for this Event?
 		proApiVer.setIcon(icon);
 		proApiVer.setName(String.format("%s%s%s v%s",
 				origDomain.getId().equals(domain.getId()) ? "" : "(EXT) ",
 				api.getName(),
-				api.isShared() ? "*" : "",
+				api.getShared() ? "*" : "",
 				apiVer.getVersion()));
 		proApiVer.setState(EventPortalWrapper.INSTANCE.getState(apiVer.getStateId()).getName());
 //		eventVerPro.setDetails(TopicUtils.buildTopic(apiVer.getDeliveryDescriptor()));
@@ -127,11 +129,11 @@ public class TabEventApiProducts extends GenericTab {
 
 	private void generateTree(PortalRowObjectTreeNode parent, EventApiProduct product, ApplicationDomain domain, boolean domainInNotes) {
 //		List<PortalRowObject> rows = new ArrayList<>();
-		PortalRowObjectTreeNode proProduct = new PortalRowObjectTreeNode(EventPortalObjectType.EVENT_API_PRODUCT, product, product.getId());
+		PortalRowObjectTreeNode proProduct = new PortalRowObjectTreeNode(SupportedObjectType.EVENT_API_PRODUCT, product, product.getId());
 		parent.addChild(proProduct);
 		proProduct.setIcon(MyIcons.ApiProductLarge);
-		proProduct.setName(product.getName() + (product.isShared() ? "*" : ""));
-		if (product.isShared()) proProduct.addDetail("Shared");
+		proProduct.setName(product.getName() + (product.getShared() ? "*" : ""));
+		if (product.getShared()) proProduct.addDetail("Shared");
 		proProduct.addDetail(String.format("%s Event API Product",
 				WordyUtils.capitalFirst(product.getBrokerType().getValue())));
 		proProduct.addDetail(String.format("%d %s",
@@ -147,7 +149,7 @@ public class TabEventApiProducts extends GenericTab {
 		
 		for (EventApiProductVersion productVersion : EventPortalWrapper.INSTANCE.getEventApiProductVersionsForEventApiProductId(product.getId())) {
 //			appVer.get
-			PortalRowObjectTreeNode proProductVer = new PortalRowObjectTreeNode(EventPortalObjectType.EVENT_API_PRODUCT_VERSION, productVersion, productVersion.getId());
+			PortalRowObjectTreeNode proProductVer = new PortalRowObjectTreeNode(SupportedObjectType.EVENT_API_PRODUCT_VERSION, productVersion, productVersion.getId());
 			proProduct.addChild(proProductVer);
 			proProductVer.setIcon(MyIcons.apiProductSmall);
 			proProductVer.setName("v" + productVersion.getVersion());
@@ -165,7 +167,8 @@ public class TabEventApiProducts extends GenericTab {
 			proProductVer.setLastUpdatedByUser(productVersion.getChangedBy());
 			proProductVer.setCreatedByUser(productVersion.getCreatedBy());
 			
-			SolaceMessagingService msgSvc = productVersion.getSolaceMessagingService();
+//			SolaceMessagingService msgSvc = productVersion.getSolaceMessagingService();
+			List<SolaceMessagingService> msgSvc = productVersion.getSolaceMessagingServices();
 //			msgSvc.get
 			StringBuilder sb = new StringBuilder();
 			for (Plan plan : productVersion.getPlans()) {

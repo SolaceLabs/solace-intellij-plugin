@@ -16,8 +16,8 @@ import community.solace.ep.idea.plugin.settings.AppSettingsState;
 import community.solace.ep.idea.plugin.utils.TimeUtils;
 import community.solace.ep.idea.plugin.utils.TopicUtils;
 import community.solace.ep.idea.plugin.utils.WordyUtils;
-import community.solace.ep.wrapper.EventPortalObjectType;
 import community.solace.ep.wrapper.EventPortalWrapper;
+import community.solace.ep.wrapper.SupportedObjectType;
 import icons.MyIcons;
 
 /**
@@ -36,7 +36,7 @@ public class TabSchema extends GenericTab {
 		PortalRowObjectTreeNode root = new PortalRowObjectTreeNode(null, null, "");  // root
 		try {
 			for (ApplicationDomain domain : EventPortalWrapper.INSTANCE.getDomains()) {
-				PortalRowObjectTreeNode row = new PortalRowObjectTreeNode(EventPortalObjectType.DOMAIN, domain, domain.getId());
+				PortalRowObjectTreeNode row = new PortalRowObjectTreeNode(SupportedObjectType.DOMAIN, domain, domain.getId());
 				row.setIcon(MyIcons.DomainLarge);
 				root.addChild(row);
 				row.setName(domain.getName());
@@ -94,7 +94,7 @@ public class TabSchema extends GenericTab {
 //		Event event = EventPortalWrapper.INSTANCE.getEvent(eventVer.getEventId());
 		Application app = EventPortalWrapper.INSTANCE.getApplication(appVer.getApplicationId());
 		ApplicationDomain appDomain = EventPortalWrapper.INSTANCE.getDomain(app.getApplicationDomainId());
-		PortalRowObjectTreeNode appVerPro = new PortalRowObjectTreeNode(EventPortalObjectType.APPLICATION_VERSION, appVer, appVer.getId());
+		PortalRowObjectTreeNode appVerPro = new PortalRowObjectTreeNode(SupportedObjectType.APPLICATION_VERSION, appVer, appVer.getId());
 		// is there a schema for this Event?
 		appVerPro.setIcon(icon);
 		appVerPro.setName(String.format("%s%s v%s",
@@ -142,13 +142,13 @@ public class TabSchema extends GenericTab {
 		
 		Event event = EventPortalWrapper.INSTANCE.getEvent(eventVer.getEventId());
 		ApplicationDomain origDomain = EventPortalWrapper.INSTANCE.getDomain(event.getApplicationDomainId());
-		PortalRowObjectTreeNode eventVerPro = new PortalRowObjectTreeNode(EventPortalObjectType.EVENT_VERSION, eventVer, eventVer.getId());
+		PortalRowObjectTreeNode eventVerPro = new PortalRowObjectTreeNode(SupportedObjectType.EVENT_VERSION, eventVer, eventVer.getId());
 		// is there a schema for this Event?
 		eventVerPro.setIcon(icon);
 		eventVerPro.setName(String.format("%s%s%s v%s",
 				origDomain.getId().equals(domain.getId()) ? "" : "(EXT) ",
 				event.getName(),
-				event.isShared() ? "*" : "",
+				event.getShared() ? "*" : "",
 				eventVer.getVersion()));
 		eventVerPro.setState(EventPortalWrapper.INSTANCE.getState(eventVer.getStateId()).getName());
 		eventVerPro.setTopic(TopicUtils.buildTopic(eventVer.getDeliveryDescriptor()));
@@ -163,7 +163,7 @@ public class TabSchema extends GenericTab {
 			SchemaVersion schemaVersion = EventPortalWrapper.INSTANCE.getSchemaVersion(eventVer.getSchemaVersionId());
 			SchemaObject schema = EventPortalWrapper.INSTANCE.getSchema(schemaVersion.getSchemaId());
 //			row.addNote(TopicUtils.capitalFirst(schema.getContentType()) + " Payload");
-			eventVerPro.addDetail(String.format("%s Payload", WordyUtils.capitalFirst(schema.getContentType())));
+			eventVerPro.addDetail(String.format("%s Payload", WordyUtils.capitalFirst(schema.getSchemaType())));
 		} else if (eventVer.getSchemaPrimitiveType() != null) {
 			eventVerPro.addDetail(String.format("%s Payload", WordyUtils.capitalFirst(eventVer.getSchemaPrimitiveType().toString())));
 		} else {
@@ -177,11 +177,11 @@ public class TabSchema extends GenericTab {
 
 	private void generateTree(PortalRowObjectTreeNode parent, SchemaObject schema, ApplicationDomain domain, boolean domainInNotes) {
 //		List<PortalRowObject> rows = new ArrayList<>();
-		PortalRowObjectTreeNode schemaPro = new PortalRowObjectTreeNode(EventPortalObjectType.SCHEMA, schema, schema.getId());
+		PortalRowObjectTreeNode schemaPro = new PortalRowObjectTreeNode(SupportedObjectType.SCHEMA, schema, schema.getId());
 		parent.addChild(schemaPro);
 		schemaPro.setIcon(MyIcons.schemaLarge);
-		schemaPro.setName(schema.getName() + (schema.isShared() ? "*" : ""));
-		if (schema.isShared()) schemaPro.addDetail("Shared");
+		schemaPro.setName(schema.getName() + (schema.getShared() ? "*" : ""));
+		if (schema.getShared()) schemaPro.addDetail("Shared");
 		schemaPro.addDetail(String.format("%d %s",
 				schema.getNumberOfVersions(),
 				WordyUtils.pluralize("Version",  schema.getNumberOfVersions())));
@@ -192,12 +192,12 @@ public class TabSchema extends GenericTab {
 		schemaPro.setCreatedByUser(schema.getCreatedBy());
 
 		for (SchemaVersion schemaVer : EventPortalWrapper.INSTANCE.getSchemaVersionsForSchemaId(schema.getId())) {
-			PortalRowObjectTreeNode schemaVerPro = new PortalRowObjectTreeNode(EventPortalObjectType.SCHEMA_VERSION, schemaVer, schemaVer.getId());
+			PortalRowObjectTreeNode schemaVerPro = new PortalRowObjectTreeNode(SupportedObjectType.SCHEMA_VERSION, schemaVer, schemaVer.getId());
 			schemaPro.addChild(schemaVerPro);
 			schemaVerPro.setIcon(MyIcons.SchemaSmall);
 			schemaVerPro.setName("v" + schemaVer.getVersion());
 
-			schemaVerPro.addDetail(String.format("%s Payload", WordyUtils.capitalFirst(schema.getContentType())));
+			schemaVerPro.addDetail(String.format("%s Payload", WordyUtils.capitalFirst(schema.getSchemaType())));
 //			} else if (schemaVer.getSchemaPrimitiveType() != null) {
 //				schemaVerPro.addNote(String.format("%s Payload", TopicUtils.capitalFirst(schemaVer.getSchemaPrimitiveType().toString())));
 //			} else {

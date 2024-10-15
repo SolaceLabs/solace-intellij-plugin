@@ -2,8 +2,6 @@ package community.solace.ep.idea.plugin.nextgen;
 
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -33,8 +31,8 @@ import community.solace.ep.client.model.SchemaObject;
 import community.solace.ep.client.model.SchemaVersion;
 import community.solace.ep.idea.plugin.settings.AppSettingsState;
 import community.solace.ep.idea.plugin.utils.EPObjectHelper;
-import community.solace.ep.wrapper.EventPortalObjectType;
 import community.solace.ep.wrapper.EventPortalWrapper;
+import community.solace.ep.wrapper.SupportedObjectType;
 
 
 public class PortalTableView extends TableView<PortalRowObjectTreeNode> {
@@ -73,9 +71,9 @@ public class PortalTableView extends TableView<PortalRowObjectTreeNode> {
     	if (col == 1 && !pro.getLink().isEmpty()) {  // the name is always clickable
     		return true;
     	} else if (col == 6) {  // pull down schemas if you want?
-            if (pro.getType() == EventPortalObjectType.APPLICATION_VERSION
+            if (pro.getType() == SupportedObjectType.APPLICATION_VERSION
             		/* || pro.getType() == EventPortalObjectType.EVENT_VERSION */
-            		|| (pro.getType() == EventPortalObjectType.SCHEMA_VERSION && !pro.getId().isEmpty())) {
+            		|| (pro.getType() == SupportedObjectType.SCHEMA_VERSION && !pro.getId().isEmpty())) {
                 return true;
             }
     	} else if (col == 0) {
@@ -166,7 +164,7 @@ public class PortalTableView extends TableView<PortalRowObjectTreeNode> {
                     } else if (6 == col) {
 //                    	BrowserUtil.browse("https://news.google.com");
 
-                    	if (pro.getType() == EventPortalObjectType.SCHEMA_VERSION && !pro.getId().isEmpty()) {
+                    	if (pro.getType() == SupportedObjectType.SCHEMA_VERSION && !pro.getId().isEmpty()) {
                     		SchemaVersion schemaVer = EventPortalWrapper.INSTANCE.getSchemaVersion(pro.getId());
                     		SchemaObject schema = EventPortalWrapper.INSTANCE.getSchema(schemaVer.getSchemaId());
                 			JsonObject jo = new Gson().fromJson(schemaVer.getContent(), JsonObject.class);
@@ -178,7 +176,7 @@ public class PortalTableView extends TableView<PortalRowObjectTreeNode> {
                 				fileType = JsonFileType.INSTANCE;
                 			}
                 			myParentTab.getFactory().addEditorTab(title, Math.random() > 0.5 ? schemaVer.getContent() : pretty, fileType, false, pro);
-                    	} else if (pro.getType() == EventPortalObjectType.EVENT_VERSION) {
+                    	} else if (pro.getType() == SupportedObjectType.EVENT_VERSION) {
                     		if ("a".equals("a")) return;
                     		EventVersion ev = EventPortalWrapper.INSTANCE.getEventVersion(pro.getId());
                     		SchemaVersion schemaVer = EventPortalWrapper.INSTANCE.getSchemaVersion(ev.getSchemaVersionId());
@@ -209,7 +207,7 @@ public class PortalTableView extends TableView<PortalRowObjectTreeNode> {
                     			Notifications.Bus.notify(new Notification("ep20", "Solace Event Portal", "Could not copy schema to clipboard", NotificationType.WARNING));
                     		}
                     		
-                    	} else if (pro.getType() == EventPortalObjectType.APPLICATION_VERSION) {
+                    	} else if (pro.getType() == SupportedObjectType.APPLICATION_VERSION) {
                     		ApplicationVersion appVer = EventPortalWrapper.INSTANCE.getApplicationVersion(pro.getId());
                     		Application app = EventPortalWrapper.INSTANCE.getApplication(appVer.getApplicationId());
                     		

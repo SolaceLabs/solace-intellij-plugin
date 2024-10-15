@@ -19,8 +19,8 @@ import community.solace.ep.idea.plugin.settings.AppSettingsState;
 import community.solace.ep.idea.plugin.utils.TimeUtils;
 import community.solace.ep.idea.plugin.utils.TopicUtils;
 import community.solace.ep.idea.plugin.utils.WordyUtils;
-import community.solace.ep.wrapper.EventPortalObjectType;
 import community.solace.ep.wrapper.EventPortalWrapper;
+import community.solace.ep.wrapper.SupportedObjectType;
 import icons.MyIcons;
 
 /**
@@ -39,7 +39,7 @@ public class TabEventApis extends GenericTab {
 		PortalRowObjectTreeNode root = new PortalRowObjectTreeNode(null, null, "");  // root
 		try {
 			for (ApplicationDomain domain : EventPortalWrapper.INSTANCE.getDomains()) {
-				PortalRowObjectTreeNode row = new PortalRowObjectTreeNode(EventPortalObjectType.DOMAIN, domain, domain.getId());
+				PortalRowObjectTreeNode row = new PortalRowObjectTreeNode(SupportedObjectType.DOMAIN, domain, domain.getId());
 				row.setIcon(MyIcons.DomainLarge);
 				root.addChild(row);
 				row.setName(domain.getName());
@@ -96,13 +96,13 @@ public class TabEventApis extends GenericTab {
 		
 		Event event = EventPortalWrapper.INSTANCE.getEvent(eventVer.getEventId());
 		ApplicationDomain origDomain = EventPortalWrapper.INSTANCE.getDomain(event.getApplicationDomainId());
-		PortalRowObjectTreeNode eventVerPro = new PortalRowObjectTreeNode(EventPortalObjectType.EVENT_VERSION, eventVer, eventVer.getId());
+		PortalRowObjectTreeNode eventVerPro = new PortalRowObjectTreeNode(SupportedObjectType.EVENT_VERSION, eventVer, eventVer.getId());
 		// is there a schema for this Event?
 		eventVerPro.setIcon(icon);
 		eventVerPro.setName(String.format("%s%s%s v%s",
 				origDomain.getId().equals(domain.getId()) ? "" : "(EXT) ",
 				event.getName(),
-				event.isShared() ? "*" : "",
+				event.getShared() ? "*" : "",
 				eventVer.getVersion()));
 		eventVerPro.setState(EventPortalWrapper.INSTANCE.getState(eventVer.getStateId()).getName());
 		eventVerPro.setTopic(TopicUtils.buildTopic(eventVer.getDeliveryDescriptor()));
@@ -117,7 +117,7 @@ public class TabEventApis extends GenericTab {
 			SchemaVersion schemaVersion = EventPortalWrapper.INSTANCE.getSchemaVersion(eventVer.getSchemaVersionId());
 			SchemaObject schema = EventPortalWrapper.INSTANCE.getSchema(schemaVersion.getSchemaId());
 //			row.addNote(TopicUtils.capitalFirst(schema.getContentType()) + " Payload");
-			eventVerPro.addDetail(String.format("%s Payload", WordyUtils.capitalFirst(schema.getContentType())));
+			eventVerPro.addDetail(String.format("%s Payload", WordyUtils.capitalFirst(schema.getSchemaType())));
 		} else if (eventVer.getSchemaPrimitiveType() != null) {
 			eventVerPro.addDetail(String.format("%s Payload", WordyUtils.capitalFirst(eventVer.getSchemaPrimitiveType().getValue())));
 		} else {
@@ -129,11 +129,11 @@ public class TabEventApis extends GenericTab {
 
 	private void generateTree(PortalRowObjectTreeNode parent, EventApi api, ApplicationDomain domain, boolean domainInNotes) {
 //		List<PortalRowObject> rows = new ArrayList<>();
-		PortalRowObjectTreeNode apiPro = new PortalRowObjectTreeNode(EventPortalObjectType.EVENT_API, api, api.getId());
+		PortalRowObjectTreeNode apiPro = new PortalRowObjectTreeNode(SupportedObjectType.EVENT_API, api, api.getId());
 		parent.addChild(apiPro);
 		apiPro.setIcon(MyIcons.apiLarge);
-		apiPro.setName(api.getName() + (api.isShared() ? "*" : ""));
-		if (api.isShared()) apiPro.addDetail("Shared");
+		apiPro.setName(api.getName() + (api.getShared() ? "*" : ""));
+		if (api.getShared()) apiPro.addDetail("Shared");
 		apiPro.addDetail(String.format("%s Event API",
 				WordyUtils.capitalFirst(api.getBrokerType().getValue())));
 		apiPro.addDetail(String.format("%d %s",
@@ -148,7 +148,7 @@ public class TabEventApis extends GenericTab {
 		
 		for (EventApiVersion apiVer : EventPortalWrapper.INSTANCE.getEventApiVersionsForEventApiId(api.getId())) {
 //			appVer.get
-			PortalRowObjectTreeNode apiVerPro = new PortalRowObjectTreeNode(EventPortalObjectType.EVENT_API_VERSION, apiVer, apiVer.getId());
+			PortalRowObjectTreeNode apiVerPro = new PortalRowObjectTreeNode(SupportedObjectType.EVENT_API_VERSION, apiVer, apiVer.getId());
 			apiPro.addChild(apiVerPro);
 			apiVerPro.setIcon(MyIcons.apiSmall);
 			apiVerPro.setName("v" + apiVer.getVersion());

@@ -43,7 +43,7 @@ import community.solace.ep.idea.plugin.nextgen.TabEventApis;
 import community.solace.ep.idea.plugin.nextgen.TabEvents;
 import community.solace.ep.idea.plugin.nextgen.TabSchema;
 import community.solace.ep.idea.plugin.utils.Notify;
-import community.solace.ep.wrapper.EventPortalObjectType;
+import community.solace.ep.wrapper.SupportedObjectType;
 import community.solace.ep.wrapper.EventPortalWrapper;
 import icons.MyIcons;
 
@@ -104,7 +104,7 @@ public class SolaceEventPortalToolWindowFactory implements ToolWindowFactory {
 	
 
 	public void openDownloadAsyncApi(PortalRowObjectTreeNode pro, String asyncApi) {
-		if (pro.getType() != EventPortalObjectType.APPLICATION_VERSION) return;
+		if (pro.getType() != SupportedObjectType.APPLICATION_VERSION) return;
 		ApplicationVersion appVer = EventPortalWrapper.INSTANCE.getApplicationVersion(pro.getId());
 		Application app = EventPortalWrapper.INSTANCE.getApplication(appVer.getApplicationId());
 		MyAsyncApiDialog dialog = new MyAsyncApiDialog(mainProject, app, appVer, asyncApi);
@@ -163,7 +163,7 @@ public class SolaceEventPortalToolWindowFactory implements ToolWindowFactory {
         
         
         JButton button = new JButton("Generate code...");//, MyIcons.AsyncApi2);
-        if (pro.getType() == EventPortalObjectType.APPLICATION_VERSION) button.setIcon(MyIcons.AsyncApi2);
+        if (pro.getType() == SupportedObjectType.APPLICATION_VERSION) button.setIcon(MyIcons.AsyncApi2);
         button.addActionListener(new ActionListener() {
 			
 			@Override
