@@ -2,12 +2,12 @@ package community.solace.ep.idea.plugin.utils;
 
 import java.awt.Color;
 
-import community.solace.ep.wrapper.EventPortalObjectType;
+import community.solace.ep.wrapper.SupportedObjectType;
 
 public class EPObjectHelper {
 
 	
-	public static Color getColor(EventPortalObjectType type) {
+	public static Color getColor(SupportedObjectType type) {
 		switch (type) {
 		case DOMAIN:
 			return Color.decode("#9aa7b0");
@@ -34,7 +34,7 @@ public class EPObjectHelper {
 		}
 	}
 	
-	public static String getName(EventPortalObjectType type) {
+	public static String getName(SupportedObjectType type) {
 //		switch (type) {
 //		case DOMAIN: return "Domain";
 //		case APPLICATION: return "Application";

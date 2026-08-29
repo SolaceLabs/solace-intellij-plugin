@@ -29,9 +29,8 @@ import com.intellij.ui.table.TableView;
 
 import community.solace.ep.idea.plugin.utils.EPObjectHelper;
 import community.solace.ep.idea.plugin.utils.TimeUtils;
-import community.solace.ep.wrapper.EventPortalObjectType;
 import community.solace.ep.wrapper.EventPortalWrapper;
-import icons.MyIcons;
+import community.solace.ep.wrapper.SupportedObjectType;
 
 public class CustomTableCellRenderer extends DefaultTableCellRenderer {
 	
@@ -284,7 +283,7 @@ public class CustomTableCellRenderer extends DefaultTableCellRenderer {
             con.anchor = GridBagConstraints.LINE_START;
             con.weightx = 1;
 //            int x = 0;
-			if (pro.getType() == EventPortalObjectType.APPLICATION_VERSION || pro.getType() == EventPortalObjectType.EVENT_API_VERSION) {
+			if (pro.getType() == SupportedObjectType.APPLICATION_VERSION || pro.getType() == SupportedObjectType.EVENT_API_VERSION) {
 				AnActionLink link = new AnActionLink("View AsyncAPI", new MessageAction("asyncApi " + pro.getName()));
 //				link.setIcon(MyIcons.AsyncApi2, false);
 //				externalLink.setExternalLinkIcon();
@@ -297,12 +296,12 @@ public class CustomTableCellRenderer extends DefaultTableCellRenderer {
 //				panel.add(link, con);
 
 //				return externalLink;
-			} else if (pro.getType() == EventPortalObjectType.EVENT_VERSION) {
+			} else if (pro.getType() == SupportedObjectType.EVENT_VERSION) {
 //				ActionLink externalLink = new AnActionLink("Generate Schema POJO...", EMPTY_EVENT);
 //				ActionLink externalLink = new AnActionLink("Copy schema to clipboard...", EMPTY_EVENT);
 //				externalLink.setBackground(cellComponent.getBackground());
 //				panel.add(externalLink, con);
-			} else if (pro.getType() == EventPortalObjectType.SCHEMA_VERSION && !pro.getLink().isBlank()) {
+			} else if (pro.getType() == SupportedObjectType.SCHEMA_VERSION && !pro.getLink().isBlank()) {
 //				ActionLink externalLink = new AnActionLink("Generate Schema POJO...", EMPTY_EVENT);
 				ActionLink link = new AnActionLink("View schema", new MessageAction("view schema " + pro.getName()));
 //				externalLink.setBackground(cellComponent.getBackground());
